@@ -61,12 +61,12 @@ fn event_kind_impl(event_enum: ItemEnum) -> proc_macro2::TokenStream {
 
 
         #(
-            pub static #variants_vec: ::std::sync::RwLock<Vec<qqbot_sdk::DynEventHandler>> =
+            pub static #variants_vec: ::std::sync::RwLock<Vec<qqbot_sdk_core::DynEventHandler>> =
                 ::std::sync::RwLock::new(Vec::new());
         )*
 
-        impl qqbot_sdk::KindRegistryKey for #kind_ident {
-            fn get_writable_vec(&self) -> ::std::sync::RwLockWriteGuard<'static, Vec<qqbot_sdk::DynEventHandler>> {
+        impl qqbot_sdk_core::KindRegistryKey for #kind_ident {
+            fn get_writable_vec(&self) -> ::std::sync::RwLockWriteGuard<'static, Vec<qqbot_sdk_core::DynEventHandler>> {
                 match self {
                     #(
                         Self::#variants => #variants_vec.write().unwrap(),
@@ -74,7 +74,7 @@ fn event_kind_impl(event_enum: ItemEnum) -> proc_macro2::TokenStream {
                 }
             }
 
-            fn get_readable_vec(&self) -> ::std::vec::Vec<qqbot_sdk::DynEventHandler> {
+            fn get_readable_vec(&self) -> ::std::vec::Vec<qqbot_sdk_core::DynEventHandler> {
                 match self {
                     #(
                         Self::#variants => #variants_vec.read().unwrap().clone(),
