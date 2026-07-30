@@ -30,4 +30,4 @@ pub use openapi::{
 #[cfg(feature = "signature")]
 pub mod signature;
 #[cfg(feature = "signature")]
-pub use signature::sign_webhook_validation;
+pub use signature::{sign_webhook_validation, SignatureError};

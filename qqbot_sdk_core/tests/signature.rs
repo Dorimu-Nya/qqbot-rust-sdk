@@ -1,4 +1,4 @@
-use qqbot_sdk_core::sign_webhook_validation;
+use qqbot_sdk_core::{sign_webhook_validation, SignatureError};
 
 #[test]
 fn verify_signature() {
@@ -16,7 +16,7 @@ fn verify_signature() {
 #[test]
 fn verify_signature_empty_secret_returns_error() {
     let res = sign_webhook_validation("", "1725442341", "Arq0D5A61EgUu4OxUvOp");
-    assert!(matches!(res, Err(qqbot_sdk_core::Error::InvalidHeader(_))));
+    assert!(matches!(res, Err(SignatureError::EmptyBotSecret)));
 }
 
 #[test]

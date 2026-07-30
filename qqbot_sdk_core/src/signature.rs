@@ -1,5 +1,14 @@
-use crate::{Error, Result};
 use ed25519_dalek::{Signer, SigningKey, VerifyingKey};
+use thiserror::Error;
+
+pub type Result<T> = std::result::Result<T, SignatureError>;
+
+/// Webhook 签名相关错误。
+#[derive(Debug, Error)]
+pub enum SignatureError {
+    #[error("bot secret must not be empty")]
+    EmptyBotSecret,
+}
 // use base64::Engine;
 // use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, VerifyingKey};
 // use http::HeaderMap;
@@ -297,7 +306,7 @@ pub fn public_key_from_bot_secret(bot_secret: &str) -> Result<Vec<u8>> {
 /// 使用 Bot Secret 推导 Ed25519 私钥种子。
 fn signing_key_from_bot_secret(bot_secret: &str) -> Result<SigningKey> {
     if bot_secret.is_empty() {
-        return Err(Error::InvalidHeader("bot secret is empty".to_string()));
+        return Err(SignatureError::EmptyBotSecret);
     }
     // 与官方实现保持兼容：通过重复 secret 填充到 32 字节种子。
     let mut seed = Vec::new();
