@@ -1,9 +1,5 @@
 //! QQ bot SDK (webhook-first).
 
-extern crate self as qqbot_sdk_core;
-
-extern crate self as qqbot_sdk;
-
 #[cfg(feature = "events")]
 pub mod events;
 #[cfg(feature = "events")]

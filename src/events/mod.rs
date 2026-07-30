@@ -1,3 +1,7 @@
+mod macros;
+
+pub(crate) use macros::event_kind;
+
 pub mod c2c;
 pub mod common;
 pub mod event;

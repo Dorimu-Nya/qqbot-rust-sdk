@@ -845,7 +845,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "qqbot_sdk_core"
+name = "qqbot-rust-sdk"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -855,7 +855,6 @@ dependencies = [
  "http",
  "once_cell",
  "percent-encoding",
- "qqbot_sdk_core_macros",
  "reqwest",
  "serde",
  "serde_json",
@@ -864,15 +863,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "tracing",
-]
-
-[[package]]
-name = "qqbot_sdk_core_macros"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]

@@ -1,16 +1,21 @@
-[workspace]
-members = [
-    "qqbot_sdk_core",
-    "qqbot_sdk_core_macros",
-]
-resolver = "2"
-
-[workspace.package]
+[package]
+name = "qqbot-rust-sdk"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
+description = "Rust SDK for Tencent QQ Bot webhook events, OpenAPI, and signatures"
+repository = "https://github.com/Dorimu-Nya/qqbot-rust-sdk"
 
-[workspace.dependencies]
+[lib]
+name = "qqbot_rust_sdk"
+
+[features]
+default = ["events", "openapi", "signature"]
+events = []
+openapi = []
+signature = []
+
+[dependencies]
 async-trait = "0.1"
 base64 = "0.22"
 ed25519-dalek = "2"
@@ -26,3 +31,9 @@ strum = { version = "0.27", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "rt"] }
 tracing = "0.1"
+
+[dev-dependencies]
+serde_json = "1"
+
+[package.metadata.docs.rs]
+all-features = true

@@ -2,11 +2,11 @@ use super::models::{
     C2cMessage, C2cMsgReceiveEvent, C2cMsgRejectEvent, FriendAddEvent, FriendDelEvent,
 };
 use crate::events::event::Event;
+use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 /// 单聊事件
-#[qqbot_sdk_core_macros::event_kind]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t", content = "d")]
 pub enum C2cEventType {
@@ -25,6 +25,16 @@ pub enum C2cEventType {
     /// C2C 打开消息推送
     #[serde(rename = "C2C_MSG_RECEIVE")]
     C2cMsgReceive(C2cMsgReceiveEvent),
+}
+
+event_kind! {
+    C2cEventType => C2cEventTypeKind {
+        C2cMessageCreate: C2cMessageCreate(_),
+        FriendAdd: FriendAdd(_),
+        FriendDel: FriendDel(_),
+        C2cMsgReject: C2cMsgReject(_),
+        C2cMsgReceive: C2cMsgReceive(_),
+    }
 }
 
 impl FromDispatchPayload for C2cMessage {

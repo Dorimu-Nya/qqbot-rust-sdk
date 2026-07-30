@@ -5,11 +5,11 @@ use super::member::GuildMemberEvent;
 use super::messages::GuildMessages;
 use super::open_forum::OpenForumEvent;
 use crate::events::event::Event;
+use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 /// 频道事件
-#[qqbot_sdk_core_macros::event_kind]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t", content = "d")]
 pub enum GuildEventType {
@@ -106,6 +106,41 @@ pub enum GuildEventType {
     AudioOrLiveChannelMemberExit(AudioOrLiveChannelMemberEvent),
 }
 
+event_kind! {
+    GuildEventType => GuildEventTypeKind {
+        AtMessageCreate: AtMessageCreate(_),
+        PublicMessageDelete: PublicMessageDelete(),
+        DirectMessageCreate: DirectMessageCreate(_),
+        DirectMessageDelete: DirectMessageDelete(),
+        MessageReactionAdd: MessageReactionAdd,
+        MessageReactionRemove: MessageReactionRemove,
+        MessageAuditPass: MessageAuditPass(),
+        MessageAuditReject: MessageAuditReject(),
+        OpenForumThreadCreate: OpenForumThreadCreate(_),
+        OpenForumPostCreate: OpenForumPostCreate(_),
+        OpenForumReplyCreate: OpenForumReplyCreate(_),
+        OpenForumThreadUpdate: OpenForumThreadUpdate(_),
+        OpenForumPostDelete: OpenForumPostDelete(_),
+        OpenForumReplyDelete: OpenForumReplyDelete(_),
+        OpenForumThreadDelete: OpenForumThreadDelete(_),
+        GuildCreate: GuildCreate(_),
+        GuildUpdate: GuildUpdate(_),
+        GuildDelete: GuildDelete(_),
+        ChannelCreate: ChannelCreate(_),
+        ChannelUpdate: ChannelUpdate(_),
+        ChannelDelete: ChannelDelete(_),
+        GuildMemberAdd: GuildMemberAdd(_),
+        GuildMemberRemove: GuildMemberRemove(_),
+        GuildMemberUpdate: GuildMemberUpdate(_),
+        AudioStart: AudioStart(),
+        AudioFinish: AudioFinish(),
+        AudioOnMic: AudioOnMic(),
+        AudioOffMic: AudioOffMic(),
+        AudioOrLiveChannelMemberEnter: AudioOrLiveChannelMemberEnter(_),
+        AudioOrLiveChannelMemberExit: AudioOrLiveChannelMemberExit(_),
+    }
+}
+
 // impl GuildEventType {
 //     fn to_kind(self) -> GuildEventTypeKind {
 //         match self {
@@ -115,7 +150,6 @@ pub enum GuildEventType {
 // }
 
 // 下面这一部分貌似没有用？webhook回调订阅好像没这些东西
-#[qqbot_sdk_core_macros::event_kind]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t", content = "d")]
 pub enum ForumEventType {
@@ -143,6 +177,19 @@ pub enum ForumEventType {
     /// 帖子审核事件
     #[serde(rename = "FORUM_PUBLISH_AUDIT_RESULT")]
     ForumAuditEvent(ForumEventAuditResult),
+}
+
+event_kind! {
+    ForumEventType => ForumEventTypeKind {
+        ForumThreadCreate: ForumThreadCreate(_),
+        ForumThreadUpdate: ForumThreadUpdate(_),
+        ForumThreadDelete: ForumThreadDelete(_),
+        ForumPostCreate: ForumPostCreate(_),
+        ForumPostDelete: ForumPostDelete(_),
+        ForumReplyCreate: ForumReplyCreate(_),
+        ForumReplyDelete: ForumReplyDelete(_),
+        ForumAuditEvent: ForumAuditEvent(_),
+    }
 }
 
 impl FromDispatchPayload for GuildMessages {

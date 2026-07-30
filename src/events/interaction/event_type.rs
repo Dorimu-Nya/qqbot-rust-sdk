@@ -1,16 +1,22 @@
 use super::models::Interaction;
 use crate::events::event::Event;
+use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 /// 互动事件
-#[qqbot_sdk_core_macros::event_kind]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t", content = "d")]
 pub enum InteractionEventType {
     /// 创建互动事件, 用户点击了消息体的回调按钮触发
     #[serde(rename = "INTERACTION_CREATE")]
     InteractionCreate(Interaction),
+}
+
+event_kind! {
+    InteractionEventType => InteractionEventTypeKind {
+        InteractionCreate: InteractionCreate(_),
+    }
 }
 
 impl FromDispatchPayload for Interaction {

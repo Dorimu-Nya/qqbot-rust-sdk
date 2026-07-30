@@ -1,4 +1,4 @@
-use qqbot_sdk_core::{sign_webhook_validation, SignatureError};
+use qqbot_rust_sdk::{sign_webhook_validation, SignatureError};
 
 #[test]
 fn verify_signature() {

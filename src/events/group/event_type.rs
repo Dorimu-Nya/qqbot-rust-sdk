@@ -1,10 +1,10 @@
 use super::models::{GroupAddRobotEvent, GroupAtMessage, GroupDelRobotEvent, GroupMsgRejectEvent};
 use crate::events::event::Event;
+use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 /// 群事件
-#[qqbot_sdk_core_macros::event_kind]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "t", content = "d")]
 pub enum GroupEventType {
@@ -26,6 +26,17 @@ pub enum GroupEventType {
     /// 消息授权状态变更
     #[serde(rename = "SUBSCRIBE_MESSAGE_STATUS")]
     SubscribeMessageStatus,
+}
+
+event_kind! {
+    GroupEventType => GroupEventTypeKind {
+        GroupAtMessageCreate: GroupAtMessageCreate(_),
+        GroupAddRobot: GroupAddRobot(_),
+        GroupDelRobot: GroupDelRobot(_),
+        GroupMsgReceive: GroupMsgReceive(_),
+        GroupMsgReject: GroupMsgReject(_),
+        SubscribeMessageStatus: SubscribeMessageStatus,
+    }
 }
 
 impl FromDispatchPayload for GroupAtMessage {
