@@ -1,9 +1,9 @@
 [package]
 name = "qqbot-rust-sdk"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-description = "Rust SDK for Tencent QQ Bot webhook events, OpenAPI, and signatures"
+description = "A SDK with Tencent Offical QQ Bot models and API defining based on https://bot.q.qq.com/wiki/."
 repository = "https://github.com/Dorimu-Nya/qqbot-rust-sdk"
 
 [lib]
