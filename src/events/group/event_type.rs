@@ -4,40 +4,31 @@ use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
-/// 群事件
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "t", content = "d")]
-pub enum GroupEventType {
-    /// 群消息事件 AT 事件
-    #[serde(rename = "GROUP_AT_MESSAGE_CREATE")]
-    GroupAtMessageCreate(GroupAtMessage),
-    /// 群添加机器人
-    #[serde(rename = "GROUP_AT_ROBOT")]
-    GroupAddRobot(GroupAddRobotEvent),
-    /// 群移除机器人
-    #[serde(rename = "GROUP_DEL_ROBOT")]
-    GroupDelRobot(GroupDelRobotEvent),
-    /// 群开启消息推送
-    #[serde(rename = "GROUP_MSG_RECEIVE")]
-    GroupMsgReceive(GroupAddRobotEvent),
-    /// 群关闭消息推送
-    #[serde(rename = "GROUP_MSG_REJECT")]
-    GroupMsgReject(GroupMsgRejectEvent),
-    /// 消息授权状态变更
-    #[serde(rename = "SUBSCRIBE_MESSAGE_STATUS")]
-    SubscribeMessageStatus,
-}
-
-event_kind! {
-    GroupEventType => GroupEventTypeKind {
-        GroupAtMessageCreate: GroupAtMessageCreate(_),
-        GroupAddRobot: GroupAddRobot(_),
-        GroupDelRobot: GroupDelRobot(_),
-        GroupMsgReceive: GroupMsgReceive(_),
-        GroupMsgReject: GroupMsgReject(_),
-        SubscribeMessageStatus: SubscribeMessageStatus,
+event_kind!(
+    /// 群事件
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[serde(tag = "t", content = "d")]
+    pub enum GroupEventType {
+        /// 群消息事件 AT 事件
+        #[serde(rename = "GROUP_AT_MESSAGE_CREATE")]
+        GroupAtMessageCreate(GroupAtMessage),
+        /// 群添加机器人
+        #[serde(rename = "GROUP_AT_ROBOT")]
+        GroupAddRobot(GroupAddRobotEvent),
+        /// 群移除机器人
+        #[serde(rename = "GROUP_DEL_ROBOT")]
+        GroupDelRobot(GroupDelRobotEvent),
+        /// 群开启消息推送
+        #[serde(rename = "GROUP_MSG_RECEIVE")]
+        GroupMsgReceive(GroupAddRobotEvent),
+        /// 群关闭消息推送
+        #[serde(rename = "GROUP_MSG_REJECT")]
+        GroupMsgReject(GroupMsgRejectEvent),
+        /// 消息授权状态变更
+        #[serde(rename = "SUBSCRIBE_MESSAGE_STATUS")]
+        SubscribeMessageStatus,
     }
-}
+);
 
 impl FromDispatchPayload for GroupAtMessage {
     fn from(payload: &DispatchPayload) -> Option<Self> {

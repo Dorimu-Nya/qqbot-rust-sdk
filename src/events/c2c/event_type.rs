@@ -6,36 +6,28 @@ use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
-/// 单聊事件
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "t", content = "d")]
-pub enum C2cEventType {
-    /// C2C 消息事件
-    #[serde(rename = "C2C_MESSAGE_CREATE")]
-    C2cMessageCreate(C2cMessage),
-    /// C2C 添加好友
-    #[serde(rename = "FRIEND_ADD")]
-    FriendAdd(FriendAddEvent),
-    /// C2C 删除好友
-    #[serde(rename = "FRIEND_DEL")]
-    FriendDel(FriendDelEvent),
-    /// C2C 关闭消息推送
-    #[serde(rename = "C2C_MSG_REJECT")]
-    C2cMsgReject(C2cMsgRejectEvent),
-    /// C2C 打开消息推送
-    #[serde(rename = "C2C_MSG_RECEIVE")]
-    C2cMsgReceive(C2cMsgReceiveEvent),
-}
-
-event_kind! {
-    C2cEventType => C2cEventTypeKind {
-        C2cMessageCreate: C2cMessageCreate(_),
-        FriendAdd: FriendAdd(_),
-        FriendDel: FriendDel(_),
-        C2cMsgReject: C2cMsgReject(_),
-        C2cMsgReceive: C2cMsgReceive(_),
+event_kind!(
+    /// 单聊事件
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[serde(tag = "t", content = "d")]
+    pub enum C2cEventType {
+        /// C2C 消息事件
+        #[serde(rename = "C2C_MESSAGE_CREATE")]
+        C2cMessageCreate(C2cMessage),
+        /// C2C 添加好友
+        #[serde(rename = "FRIEND_ADD")]
+        FriendAdd(FriendAddEvent),
+        /// C2C 删除好友
+        #[serde(rename = "FRIEND_DEL")]
+        FriendDel(FriendDelEvent),
+        /// C2C 关闭消息推送
+        #[serde(rename = "C2C_MSG_REJECT")]
+        C2cMsgReject(C2cMsgRejectEvent),
+        /// C2C 打开消息推送
+        #[serde(rename = "C2C_MSG_RECEIVE")]
+        C2cMsgReceive(C2cMsgReceiveEvent),
     }
-}
+);
 
 impl FromDispatchPayload for C2cMessage {
     fn from(payload: &DispatchPayload) -> Option<Self> {

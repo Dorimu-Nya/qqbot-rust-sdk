@@ -1,3 +1,5 @@
+#![cfg(feature = "signature")]
+
 use qqbot_rust_sdk::{sign_webhook_validation, SignatureError};
 
 #[test]

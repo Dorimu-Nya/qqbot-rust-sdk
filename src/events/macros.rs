@@ -1,37 +1,154 @@
 macro_rules! event_kind {
     (
-        $event:ident => $kind:ident {
-            $(
-                $variant:ident: $pattern:pat
-            ),+ $(,)?
+        $(#[$enum_attr:meta])*
+        $vis:vis enum $event:ident {
+            $($variants:tt)*
         }
+        $(,)?
     ) => {
-        /// 与事件枚举一一对应、不携带事件载荷的注册键。
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::EnumIter)]
-        pub enum $kind {
-            $($variant),+
+        event_kind! {
+            @parse
+            [$(#[$enum_attr])*]
+            [$vis]
+            [$event]
+            []
+            []
+            []
+            $($variants)*
         }
+    };
 
-        impl $event {
-            pub fn to_kind(&self) -> $kind {
-                self.into()
+    (@parse
+        [$($enum_attr:tt)*]
+        [$vis:vis]
+        [$event:ident]
+        [$($enum_variants:tt)*]
+        [$($kind_variants:tt)*]
+        [$($match_arms:tt)*]
+    ) => {
+        ::paste::paste! {
+            $($enum_attr)*
+            $vis enum $event {
+                $($enum_variants)*
             }
-        }
 
-        impl From<&$event> for $kind {
-            fn from(event: &$event) -> Self {
-                use $event::*;
+            /// 与事件枚举一一对应、不携带事件载荷的注册键。
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::EnumIter)]
+            $vis enum [<$event Kind>] {
+                $($kind_variants)*
+            }
 
-                match event {
-                    $($pattern => Self::$variant),+
+            impl $event {
+                pub fn to_kind(&self) -> [<$event Kind>] {
+                    self.into()
+                }
+            }
+
+            impl From<&$event> for [<$event Kind>] {
+                fn from(event: &$event) -> Self {
+                    match event {
+                        $($match_arms)*
+                    }
+                }
+            }
+
+            impl From<$event> for [<$event Kind>] {
+                fn from(event: $event) -> Self {
+                    Self::from(&event)
                 }
             }
         }
+    };
 
-        impl From<$event> for $kind {
-            fn from(event: $event) -> Self {
-                Self::from(&event)
-            }
+    (@parse
+        [$($enum_attr:tt)*]
+        [$vis:vis]
+        [$event:ident]
+        [$($enum_variants:tt)*]
+        [$($kind_variants:tt)*]
+        [$($match_arms:tt)*]
+        $(#[$variant_attr:meta])*
+        $variant:ident (),
+        $($rest:tt)*
+    ) => {
+        event_kind! {
+            @parse
+            [$($enum_attr)*]
+            [$vis]
+            [$event]
+            [$($enum_variants)* $(#[$variant_attr])* $variant(),]
+            [$($kind_variants)* $variant,]
+            [$($match_arms)* $event::$variant() => Self::$variant,]
+            $($rest)*
+        }
+    };
+
+    (@parse
+        [$($enum_attr:tt)*]
+        [$vis:vis]
+        [$event:ident]
+        [$($enum_variants:tt)*]
+        [$($kind_variants:tt)*]
+        [$($match_arms:tt)*]
+        $(#[$variant_attr:meta])*
+        $variant:ident ($($fields:ty),+ $(,)?),
+        $($rest:tt)*
+    ) => {
+        event_kind! {
+            @parse
+            [$($enum_attr)*]
+            [$vis]
+            [$event]
+            [$($enum_variants)* $(#[$variant_attr])* $variant($($fields),+),]
+            [$($kind_variants)* $variant,]
+            [$($match_arms)* $event::$variant(..) => Self::$variant,]
+            $($rest)*
+        }
+    };
+
+    (@parse
+        [$($enum_attr:tt)*]
+        [$vis:vis]
+        [$event:ident]
+        [$($enum_variants:tt)*]
+        [$($kind_variants:tt)*]
+        [$($match_arms:tt)*]
+        $(#[$variant_attr:meta])*
+        $variant:ident { $($fields:tt)* },
+        $($rest:tt)*
+    ) => {
+        event_kind! {
+            @parse
+            [$($enum_attr)*]
+            [$vis]
+            [$event]
+            [$($enum_variants)* $(#[$variant_attr])* $variant { $($fields)* },]
+            [$($kind_variants)* $variant,]
+            [$($match_arms)* $event::$variant { .. } => Self::$variant,]
+            $($rest)*
+        }
+    };
+
+    (@parse
+        [$($enum_attr:tt)*]
+        [$vis:vis]
+        [$event:ident]
+        [$($enum_variants:tt)*]
+        [$($kind_variants:tt)*]
+        [$($match_arms:tt)*]
+        $(#[$variant_attr:meta])*
+        $variant:ident,
+        $($rest:tt)*
+    ) => {
+        event_kind! {
+            @parse
+            [$($enum_attr)*]
+            [$vis]
+            [$event]
+            [$($enum_variants)* $(#[$variant_attr])* $variant,]
+            [$($kind_variants)* $variant,]
+            [$($match_arms)* $event::$variant => Self::$variant,]
+            $($rest)*
         }
     };
 }

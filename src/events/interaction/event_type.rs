@@ -4,20 +4,16 @@ use crate::events::event_kind;
 use crate::events::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
-/// 互动事件
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "t", content = "d")]
-pub enum InteractionEventType {
-    /// 创建互动事件, 用户点击了消息体的回调按钮触发
-    #[serde(rename = "INTERACTION_CREATE")]
-    InteractionCreate(Interaction),
-}
-
-event_kind! {
-    InteractionEventType => InteractionEventTypeKind {
-        InteractionCreate: InteractionCreate(_),
+event_kind!(
+    /// 互动事件
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[serde(tag = "t", content = "d")]
+    pub enum InteractionEventType {
+        /// 创建互动事件, 用户点击了消息体的回调按钮触发
+        #[serde(rename = "INTERACTION_CREATE")]
+        InteractionCreate(Interaction),
     }
-}
+);
 
 impl FromDispatchPayload for Interaction {
     fn from(payload: &DispatchPayload) -> Option<Self> {
