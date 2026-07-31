@@ -1,33 +1,31 @@
 #![cfg(feature = "events")]
 
-use qqbot_rust_sdk::events::group::event_type::{GroupEventType, GroupEventTypeKind};
-use qqbot_rust_sdk::events::guild::event_type::{GuildEventType, GuildEventTypeKind};
-use qqbot_rust_sdk::events::interaction::event_type::{
-    InteractionEventType, InteractionEventTypeKind,
-};
+use qqbot_rust_sdk::events::group::event::{GroupEvent, GroupEventKind};
+use qqbot_rust_sdk::events::guild::event::{GuildEvent, GuildEventKind};
+use qqbot_rust_sdk::events::interaction::event::{InteractionEvent, InteractionEventKind};
 use qqbot_rust_sdk::events::interaction::models::Interaction;
 use strum::IntoEnumIterator;
 
 #[test]
 fn converts_unit_and_empty_tuple_variants_to_kinds() {
-    let group = GroupEventType::SubscribeMessageStatus;
-    assert_eq!(group.to_kind(), GroupEventTypeKind::SubscribeMessageStatus);
+    let group = GroupEvent::SubscribeMessageStatus;
+    assert_eq!(group.to_kind(), GroupEventKind::SubscribeMessageStatus);
     assert_eq!(
-        GroupEventTypeKind::from(group),
-        GroupEventTypeKind::SubscribeMessageStatus
+        GroupEventKind::from(group),
+        GroupEventKind::SubscribeMessageStatus
     );
 
-    let guild = GuildEventType::PublicMessageDelete();
-    assert_eq!(guild.to_kind(), GuildEventTypeKind::PublicMessageDelete);
+    let guild = GuildEvent::PublicMessageDelete();
+    assert_eq!(guild.to_kind(), GuildEventKind::PublicMessageDelete);
     assert_eq!(
-        GuildEventTypeKind::from(guild),
-        GuildEventTypeKind::PublicMessageDelete
+        GuildEventKind::from(guild),
+        GuildEventKind::PublicMessageDelete
     );
 }
 
 #[test]
 fn converts_payload_variants_to_kinds() {
-    let event = InteractionEventType::InteractionCreate(Interaction {
+    let event = InteractionEvent::InteractionCreate(Interaction {
         id: "interaction-id".to_string(),
         kind: None,
         scene: None,
@@ -43,16 +41,16 @@ fn converts_payload_variants_to_kinds() {
     });
 
     assert_eq!(
-        InteractionEventTypeKind::from(&event),
-        InteractionEventTypeKind::InteractionCreate
+        InteractionEventKind::from(&event),
+        InteractionEventKind::InteractionCreate
     );
     assert_eq!(
-        InteractionEventTypeKind::from(event),
-        InteractionEventTypeKind::InteractionCreate
+        InteractionEventKind::from(event),
+        InteractionEventKind::InteractionCreate
     );
 }
 
 #[test]
 fn generated_kind_enums_remain_iterable() {
-    assert_eq!(GroupEventTypeKind::iter().count(), 6);
+    assert_eq!(GroupEventKind::iter().count(), 6);
 }

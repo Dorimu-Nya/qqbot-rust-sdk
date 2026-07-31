@@ -8,7 +8,7 @@ event_kind!(
     /// 群事件
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
-    pub enum GroupEventType {
+    pub enum GroupEvent {
         /// 群消息事件 AT 事件
         #[serde(rename = "GROUP_AT_MESSAGE_CREATE")]
         GroupAtMessageCreate(GroupAtMessage),
@@ -33,9 +33,7 @@ event_kind!(
 impl FromDispatchPayload for GroupAtMessage {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GroupEventType(GroupEventType::GroupAtMessageCreate(value)) => {
-                Some(value.clone())
-            }
+            Event::GroupEvent(GroupEvent::GroupAtMessageCreate(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -44,8 +42,8 @@ impl FromDispatchPayload for GroupAtMessage {
 impl FromDispatchPayload for GroupAddRobotEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GroupEventType(GroupEventType::GroupAddRobot(value))
-            | Event::GroupEventType(GroupEventType::GroupMsgReceive(value)) => Some(value.clone()),
+            Event::GroupEvent(GroupEvent::GroupAddRobot(value))
+            | Event::GroupEvent(GroupEvent::GroupMsgReceive(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -54,7 +52,7 @@ impl FromDispatchPayload for GroupAddRobotEvent {
 impl FromDispatchPayload for GroupDelRobotEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GroupEventType(GroupEventType::GroupDelRobot(value)) => Some(value.clone()),
+            Event::GroupEvent(GroupEvent::GroupDelRobot(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -63,7 +61,7 @@ impl FromDispatchPayload for GroupDelRobotEvent {
 impl FromDispatchPayload for GroupMsgRejectEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GroupEventType(GroupEventType::GroupMsgReject(value)) => Some(value.clone()),
+            Event::GroupEvent(GroupEvent::GroupMsgReject(value)) => Some(value.clone()),
             _ => None,
         }
     }

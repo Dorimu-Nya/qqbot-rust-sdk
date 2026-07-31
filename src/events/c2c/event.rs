@@ -10,7 +10,7 @@ event_kind!(
     /// 单聊事件
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
-    pub enum C2cEventType {
+    pub enum C2cEvent {
         /// C2C 消息事件
         #[serde(rename = "C2C_MESSAGE_CREATE")]
         C2cMessageCreate(C2cMessage),
@@ -32,7 +32,7 @@ event_kind!(
 impl FromDispatchPayload for C2cMessage {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::C2cEventType(C2cEventType::C2cMessageCreate(value)) => Some(value.clone()),
+            Event::C2cEvent(C2cEvent::C2cMessageCreate(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -41,7 +41,7 @@ impl FromDispatchPayload for C2cMessage {
 impl FromDispatchPayload for FriendAddEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::C2cEventType(C2cEventType::FriendAdd(value)) => Some(value.clone()),
+            Event::C2cEvent(C2cEvent::FriendAdd(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -50,7 +50,7 @@ impl FromDispatchPayload for FriendAddEvent {
 impl FromDispatchPayload for FriendDelEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::C2cEventType(C2cEventType::FriendDel(value)) => Some(value.clone()),
+            Event::C2cEvent(C2cEvent::FriendDel(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -59,7 +59,7 @@ impl FromDispatchPayload for FriendDelEvent {
 impl FromDispatchPayload for C2cMsgRejectEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::C2cEventType(C2cEventType::C2cMsgReject(value)) => Some(value.clone()),
+            Event::C2cEvent(C2cEvent::C2cMsgReject(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -68,7 +68,7 @@ impl FromDispatchPayload for C2cMsgRejectEvent {
 impl FromDispatchPayload for C2cMsgReceiveEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::C2cEventType(C2cEventType::C2cMsgReceive(value)) => Some(value.clone()),
+            Event::C2cEvent(C2cEvent::C2cMsgReceive(value)) => Some(value.clone()),
             _ => None,
         }
     }

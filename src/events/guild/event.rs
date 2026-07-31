@@ -1,6 +1,6 @@
 use super::audio::AudioOrLiveChannelMemberEvent;
 use super::forum::{ForumEventAuditResult, ForumEventPost, ForumEventReply, ForumEventThread};
-use super::guild::{ChannelEvent, GuildEvent};
+use super::guild::{ChannelEvent, GuildEventData};
 use super::member::GuildMemberEvent;
 use super::messages::GuildMessages;
 use super::open_forum::OpenForumEvent;
@@ -13,7 +13,7 @@ event_kind!(
     /// 频道事件
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
-    pub enum GuildEventType {
+    pub enum GuildEvent {
         /// 频道内 @ 机器人的消息事件
         #[serde(rename = "AT_MESSAGE_CREATE")]
         AtMessageCreate(GuildMessages),
@@ -61,13 +61,13 @@ event_kind!(
         OpenForumThreadDelete(OpenForumEvent),
         /// 频道创建事件
         #[serde(rename = "GUILD_CREATE")]
-        GuildCreate(GuildEvent),
+        GuildCreate(GuildEventData),
         /// 频道信息变更事件
         #[serde(rename = "GUILD_UPDATE")]
-        GuildUpdate(GuildEvent),
+        GuildUpdate(GuildEventData),
         /// 频道删除事件
         #[serde(rename = "GUILD_DELETE")]
-        GuildDelete(GuildEvent),
+        GuildDelete(GuildEventData),
         /// 子频道创建事件
         #[serde(rename = "CHANNEL_CREATE")]
         ChannelCreate(ChannelEvent),
@@ -108,10 +108,10 @@ event_kind!(
     }
 );
 
-// impl GuildEventType {
-//     fn to_kind(self) -> GuildEventTypeKind {
+// impl GuildEvent {
+//     fn to_kind(self) -> GuildEventKind {
 //         match self {
-//             Self::AtMessageCreate(_) => GuildEventTypeKind::AtMessageCreate,
+//             Self::AtMessageCreate(_) => GuildEventKind::AtMessageCreate,
 //         }
 //     }
 // }
@@ -120,7 +120,7 @@ event_kind!(
 event_kind!(
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
-    pub enum ForumEventType {
+    pub enum ForumEvent {
         /// 论坛事件：用户创建主题
         #[serde(rename = "FORUM_THREAD_CREATE")]
         ForumThreadCreate(ForumEventThread),
@@ -151,10 +151,8 @@ event_kind!(
 impl FromDispatchPayload for GuildMessages {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::AtMessageCreate(value))
-            | Event::GuildEventType(GuildEventType::DirectMessageCreate(value)) => {
-                Some(value.clone())
-            }
+            Event::GuildEvent(GuildEvent::AtMessageCreate(value))
+            | Event::GuildEvent(GuildEvent::DirectMessageCreate(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -163,26 +161,24 @@ impl FromDispatchPayload for GuildMessages {
 impl FromDispatchPayload for OpenForumEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::OpenForumThreadCreate(value))
-            | Event::GuildEventType(GuildEventType::OpenForumPostCreate(value))
-            | Event::GuildEventType(GuildEventType::OpenForumReplyCreate(value))
-            | Event::GuildEventType(GuildEventType::OpenForumThreadUpdate(value))
-            | Event::GuildEventType(GuildEventType::OpenForumPostDelete(value))
-            | Event::GuildEventType(GuildEventType::OpenForumReplyDelete(value))
-            | Event::GuildEventType(GuildEventType::OpenForumThreadDelete(value)) => {
-                Some(value.clone())
-            }
+            Event::GuildEvent(GuildEvent::OpenForumThreadCreate(value))
+            | Event::GuildEvent(GuildEvent::OpenForumPostCreate(value))
+            | Event::GuildEvent(GuildEvent::OpenForumReplyCreate(value))
+            | Event::GuildEvent(GuildEvent::OpenForumThreadUpdate(value))
+            | Event::GuildEvent(GuildEvent::OpenForumPostDelete(value))
+            | Event::GuildEvent(GuildEvent::OpenForumReplyDelete(value))
+            | Event::GuildEvent(GuildEvent::OpenForumThreadDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
 }
 
-impl FromDispatchPayload for GuildEvent {
+impl FromDispatchPayload for GuildEventData {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::GuildCreate(value))
-            | Event::GuildEventType(GuildEventType::GuildUpdate(value))
-            | Event::GuildEventType(GuildEventType::GuildDelete(value)) => Some(value.clone()),
+            Event::GuildEvent(GuildEvent::GuildCreate(value))
+            | Event::GuildEvent(GuildEvent::GuildUpdate(value))
+            | Event::GuildEvent(GuildEvent::GuildDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -191,9 +187,9 @@ impl FromDispatchPayload for GuildEvent {
 impl FromDispatchPayload for ChannelEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::ChannelCreate(value))
-            | Event::GuildEventType(GuildEventType::ChannelUpdate(value))
-            | Event::GuildEventType(GuildEventType::ChannelDelete(value)) => Some(value.clone()),
+            Event::GuildEvent(GuildEvent::ChannelCreate(value))
+            | Event::GuildEvent(GuildEvent::ChannelUpdate(value))
+            | Event::GuildEvent(GuildEvent::ChannelDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -202,11 +198,9 @@ impl FromDispatchPayload for ChannelEvent {
 impl FromDispatchPayload for GuildMemberEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::GuildMemberAdd(value))
-            | Event::GuildEventType(GuildEventType::GuildMemberRemove(value))
-            | Event::GuildEventType(GuildEventType::GuildMemberUpdate(value)) => {
-                Some(value.clone())
-            }
+            Event::GuildEvent(GuildEvent::GuildMemberAdd(value))
+            | Event::GuildEvent(GuildEvent::GuildMemberRemove(value))
+            | Event::GuildEvent(GuildEvent::GuildMemberUpdate(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -215,8 +209,8 @@ impl FromDispatchPayload for GuildMemberEvent {
 impl FromDispatchPayload for AudioOrLiveChannelMemberEvent {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::GuildEventType(GuildEventType::AudioOrLiveChannelMemberEnter(value))
-            | Event::GuildEventType(GuildEventType::AudioOrLiveChannelMemberExit(value)) => {
+            Event::GuildEvent(GuildEvent::AudioOrLiveChannelMemberEnter(value))
+            | Event::GuildEvent(GuildEvent::AudioOrLiveChannelMemberExit(value)) => {
                 Some(value.clone())
             }
             _ => None,
@@ -227,11 +221,9 @@ impl FromDispatchPayload for AudioOrLiveChannelMemberEvent {
 impl FromDispatchPayload for ForumEventThread {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::ForumEventType(ForumEventType::ForumThreadCreate(value))
-            | Event::ForumEventType(ForumEventType::ForumThreadUpdate(value))
-            | Event::ForumEventType(ForumEventType::ForumThreadDelete(value)) => {
-                Some(value.clone())
-            }
+            Event::ForumEvent(ForumEvent::ForumThreadCreate(value))
+            | Event::ForumEvent(ForumEvent::ForumThreadUpdate(value))
+            | Event::ForumEvent(ForumEvent::ForumThreadDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -240,8 +232,8 @@ impl FromDispatchPayload for ForumEventThread {
 impl FromDispatchPayload for ForumEventPost {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::ForumEventType(ForumEventType::ForumPostCreate(value))
-            | Event::ForumEventType(ForumEventType::ForumPostDelete(value)) => Some(value.clone()),
+            Event::ForumEvent(ForumEvent::ForumPostCreate(value))
+            | Event::ForumEvent(ForumEvent::ForumPostDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -250,8 +242,8 @@ impl FromDispatchPayload for ForumEventPost {
 impl FromDispatchPayload for ForumEventReply {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::ForumEventType(ForumEventType::ForumReplyCreate(value))
-            | Event::ForumEventType(ForumEventType::ForumReplyDelete(value)) => Some(value.clone()),
+            Event::ForumEvent(ForumEvent::ForumReplyCreate(value))
+            | Event::ForumEvent(ForumEvent::ForumReplyDelete(value)) => Some(value.clone()),
             _ => None,
         }
     }
@@ -260,7 +252,7 @@ impl FromDispatchPayload for ForumEventReply {
 impl FromDispatchPayload for ForumEventAuditResult {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::ForumEventType(ForumEventType::ForumAuditEvent(value)) => Some(value.clone()),
+            Event::ForumEvent(ForumEvent::ForumAuditEvent(value)) => Some(value.clone()),
             _ => None,
         }
     }

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道对象
-pub struct GuildEvent {
+pub struct GuildEventData {
     /// 频道ID
     pub id: String,
     /// 频道名称

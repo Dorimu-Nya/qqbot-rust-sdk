@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 event_kind!(
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
-    pub enum MessageReactionEventType {
+    pub enum MessageReactionEvent {
         /// 为消息添加表情表态
         #[serde(rename = "MESSAGE_REACTION_ADD")]
         MessageReactionAdd(MessageReaction),
@@ -20,12 +20,10 @@ event_kind!(
 impl FromDispatchPayload for MessageReaction {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
-            Event::MessageReactionEventType(MessageReactionEventType::MessageReactionAdd(
-                value,
-            ))
-            | Event::MessageReactionEventType(MessageReactionEventType::MessageReactionRemove(
-                value,
-            )) => Some(value.clone()),
+            Event::MessageReactionEvent(MessageReactionEvent::MessageReactionAdd(value))
+            | Event::MessageReactionEvent(MessageReactionEvent::MessageReactionRemove(value)) => {
+                Some(value.clone())
+            }
             _ => None,
         }
     }

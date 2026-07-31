@@ -1,33 +1,31 @@
-use super::c2c::event_type::{C2cEventType, C2cEventTypeKind};
-use super::group::event_type::{GroupEventType, GroupEventTypeKind};
-use super::guild::event_type::{
-    ForumEventType, ForumEventTypeKind, GuildEventType, GuildEventTypeKind,
-};
-use super::interaction::event_type::{InteractionEventType, InteractionEventTypeKind};
-use super::message_reaction::event_type::{MessageReactionEventType, MessageReactionEventTypeKind};
+use super::c2c::event::{C2cEvent, C2cEventKind};
+use super::group::event::{GroupEvent, GroupEventKind};
+use super::guild::event::{ForumEvent, ForumEventKind, GuildEvent, GuildEventKind};
+use super::interaction::event::{InteractionEvent, InteractionEventKind};
+use super::message_reaction::event::{MessageReactionEvent, MessageReactionEventKind};
 use serde::{Deserialize, Serialize};
 
 /// 全部事件类型汇总分类
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Event {
-    C2cEventType(C2cEventType),
-    GroupEventType(GroupEventType),
-    GuildEventType(GuildEventType),
-    ForumEventType(ForumEventType),
-    InteractionEventType(InteractionEventType),
-    MessageReactionEventType(MessageReactionEventType),
+    C2cEvent(C2cEvent),
+    GroupEvent(GroupEvent),
+    GuildEvent(GuildEvent),
+    ForumEvent(ForumEvent),
+    InteractionEvent(InteractionEvent),
+    MessageReactionEvent(MessageReactionEvent),
 }
 
 /// 全部事件注册键的统一表示。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EventKind {
-    C2c(C2cEventTypeKind),
-    Group(GroupEventTypeKind),
-    Guild(GuildEventTypeKind),
-    Forum(ForumEventTypeKind),
-    Interaction(InteractionEventTypeKind),
-    MessageReaction(MessageReactionEventTypeKind),
+    C2c(C2cEventKind),
+    Group(GroupEventKind),
+    Guild(GuildEventKind),
+    Forum(ForumEventKind),
+    Interaction(InteractionEventKind),
+    MessageReaction(MessageReactionEventKind),
 }
 
 macro_rules! impl_event_kind_from {
@@ -40,9 +38,9 @@ macro_rules! impl_event_kind_from {
     };
 }
 
-impl_event_kind_from!(C2cEventTypeKind, C2c);
-impl_event_kind_from!(GroupEventTypeKind, Group);
-impl_event_kind_from!(GuildEventTypeKind, Guild);
-impl_event_kind_from!(ForumEventTypeKind, Forum);
-impl_event_kind_from!(InteractionEventTypeKind, Interaction);
-impl_event_kind_from!(MessageReactionEventTypeKind, MessageReaction);
+impl_event_kind_from!(C2cEventKind, C2c);
+impl_event_kind_from!(GroupEventKind, Group);
+impl_event_kind_from!(GuildEventKind, Guild);
+impl_event_kind_from!(ForumEventKind, Forum);
+impl_event_kind_from!(InteractionEventKind, Interaction);
+impl_event_kind_from!(MessageReactionEventKind, MessageReaction);
