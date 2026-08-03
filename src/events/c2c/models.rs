@@ -92,7 +92,7 @@ pub struct C2cMsgRejectEvent {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 单聊消息接收开启
 ///
-/// 参考: https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_msg_receive.html
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_msg_receive.html>
 pub struct C2cMsgReceiveEvent {
     /// 操作时间戳
     pub timestamp: i64,
