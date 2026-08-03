@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道对象
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/api/guilds_guild_id.get.html#%E5%93%8D%E5%BA%94%E4%BD%93>
 pub struct GuildEventData {
     /// 频道ID
     pub id: String,
@@ -25,6 +27,8 @@ pub struct GuildEventData {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 子频道对象
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/api/channels_channel_id.get.html#%E5%93%8D%E5%BA%94%E4%BD%93>
 pub struct ChannelEvent {
     /// 频道ID
     pub guild_id: String,
@@ -36,9 +40,9 @@ pub struct ChannelEvent {
     pub owner_id: Option<String>,
     /// 操作人用户ID
     pub op_user_id: Option<String>,
-    /// 子频道子类型
+    /// 子频道子类型（文字子频道）: 0=闲聊, 1=公告, 2=攻略, 3=开黑
     pub sub_type: Option<i64>,
     #[serde(rename = "type")]
-    /// 子频道类型
+    /// 子频道类型: 0=文字, 2=语音, 4=分组, 10005=直播, 10006=应用, 10007=论坛
     pub channel_type: Option<i64>,
 }

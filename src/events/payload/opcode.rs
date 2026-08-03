@@ -1,5 +1,7 @@
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/event-emit/payload.html#opcode-%E5%90%AB%E4%B9%89>
+
 /// 服务端进行消息推送
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr)]
 #[repr(u16)]

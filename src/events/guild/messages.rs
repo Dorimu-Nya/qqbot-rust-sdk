@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道消息
 /// 触发场景：频道内消息相关事件
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/template/model.html#message>
 pub struct GuildMessages {
     /// 消息ID
     pub id: String,

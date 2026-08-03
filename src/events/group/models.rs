@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 群消息作者
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_message_create.html#schema-user>
 pub struct GroupAuthor {
     /// 成员 openid
     pub member_openid: String,
@@ -11,7 +13,7 @@ pub struct GroupAuthor {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 群 @ 消息
 ///
-/// 触发场景：群内用户 @ 机器人发送消息
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_at_message_create.html>
 pub struct GroupAtMessage {
     /// 平台方消息ID，可以用于被动消息发送
     pub id: String,
@@ -31,7 +33,9 @@ pub struct GroupAtMessage {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 机器人被添加到群
+/// 机器人加入群聊
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_add_robot.html>
 pub struct GroupAddRobotEvent {
     /// 操作时间戳
     pub timestamp: i64,
@@ -42,7 +46,9 @@ pub struct GroupAddRobotEvent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 机器人被移出群
+/// 机器人退出群聊
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_del_robot.html>
 pub struct GroupDelRobotEvent {
     /// 操作时间戳
     pub timestamp: i64,
@@ -53,7 +59,9 @@ pub struct GroupDelRobotEvent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 拒绝机器人主动消息
+/// 群聊消息接收关闭
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_msg_reject.html>
 pub struct GroupMsgRejectEvent {
     /// 操作时间戳
     pub timestamp: i64,
