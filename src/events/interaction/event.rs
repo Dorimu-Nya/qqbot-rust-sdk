@@ -9,7 +9,7 @@ event_kind!(
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
     pub enum InteractionEvent {
-        /// 互动事件创建时
+        /// 创建互动事件
         #[serde(rename = "INTERACTION_CREATE")]
         InteractionCreate(Interaction),
     }

@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员中的用户信息
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/openapi/user/model.html#user>
 pub struct User {
     /// 用户ID
     pub id: Option<String>,
@@ -24,6 +26,8 @@ pub struct User {
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员信息
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/member/model.html#MemberWithGuildID>
 pub struct Member {
     /// 加入时间
     pub joined_at: Option<String>,
@@ -51,6 +55,8 @@ pub struct Member {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员事件
+/// 
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/guild_member.html#%E9%A2%91%E9%81%93%E6%88%90%E5%91%98%E4%BA%8B%E4%BB%B6>
 pub struct GuildMemberEvent {
     #[serde(flatten)]
     /// 成员信息
