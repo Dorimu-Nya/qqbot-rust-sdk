@@ -1,4 +1,7 @@
-use crate::{Error, HttpClient, Result};
+use super::{
+    error::{Error, Result},
+    http::HttpClient,
+};
 use reqwest::{Method, Response};
 use serde::de::DeserializeOwned;
 use serde::Serialize;

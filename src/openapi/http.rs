@@ -1,4 +1,4 @@
-use crate::{Error, Result};
+use super::error::{Error, Result};
 use reqwest::{Client, RequestBuilder, Response};
 use std::time::Duration;
 use tokio::time::sleep;

@@ -1,8 +1,8 @@
 use super::{
     render_path, require_path, Method, OpenApiClient, OpenApiPaths, Result, TokenProvider,
 };
+use crate::openapi::error::Error;
 use crate::openapi::models::{InteractionAckCode, InteractionAckRequest};
-use crate::Error;
 
 /// 交互事件回包接口。
 #[derive(Clone)]

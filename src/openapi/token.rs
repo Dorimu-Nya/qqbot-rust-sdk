@@ -1,4 +1,7 @@
-use crate::{Error, HttpClient, Result, RetryPolicy};
+use super::{
+    error::{Error, Result},
+    http::{HttpClient, RetryPolicy},
+};
 use async_trait::async_trait;
 use serde_json::{json, Value};
 use std::{

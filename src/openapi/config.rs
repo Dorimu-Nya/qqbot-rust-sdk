@@ -1,4 +1,4 @@
-use crate::RetryPolicy;
+use super::http::RetryPolicy;
 use http::header::HeaderName;
 
 pub(crate) const OFFICIAL_API_BASE_URL: &str = "https://api.sgroup.qq.com";

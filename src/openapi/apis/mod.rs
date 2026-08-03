@@ -1,4 +1,4 @@
-pub(super) use crate::Result;
+pub(super) use super::error::Result;
 pub(super) use reqwest::Method;
 
 pub(super) use super::client::OpenApiClient;
