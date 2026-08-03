@@ -1,3 +1,6 @@
+//! Webhook签名校验的请求体和响应体的数据结构定义
+//!
+//! 参考: <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/event-emit/webhook.html>
 use serde::{Deserialize, Serialize};
 
 /// 接收开放平台对机器人服务端进行验证的消息体

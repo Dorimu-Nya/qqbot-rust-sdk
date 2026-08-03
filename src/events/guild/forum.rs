@@ -3,7 +3,7 @@ use serde_json::{Map, Value};
 
 /// 论坛事件对象
 ///
-/// https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#
+/// <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 主题事件
 ///

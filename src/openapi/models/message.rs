@@ -186,7 +186,7 @@ pub struct SendMessageResponse {
 
 /// Markdown 消息
 ///
-/// https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/markdown.html
+/// <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/markdown.html>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageMarkdown {
     /// 本次回复的 Markdown 文本内容（可选）。
@@ -366,7 +366,7 @@ pub enum ActionAnchor {
 
 /// ARK 消息
 ///
-/// https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/ark.html
+/// <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/ark.html>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageArk {
     /// Ark 模板 ID。
@@ -389,7 +389,7 @@ pub struct MessageArkKv {
 
 ///  Embed 消息
 ///
-/// https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/embed.html
+/// <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/embed.html>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageEmbed {
     /// 卡片标题（可选）。

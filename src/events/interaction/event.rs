@@ -1,7 +1,7 @@
 use super::models::Interaction;
-use crate::events::event::Event;
+use crate::events::payload::event::Event;
 use crate::events::event_kind;
-use crate::events::payload::{DispatchPayload, FromDispatchPayload};
+use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
@@ -9,7 +9,7 @@ event_kind!(
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
     pub enum InteractionEvent {
-        /// 创建互动事件, 用户点击了消息体的回调按钮触发
+        /// 互动事件创建时
         #[serde(rename = "INTERACTION_CREATE")]
         InteractionCreate(Interaction),
     }

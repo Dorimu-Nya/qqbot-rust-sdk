@@ -1,7 +1,7 @@
 use super::reaction::MessageReaction;
-use crate::events::event::Event;
+use crate::events::payload::event::Event;
 use crate::events::event_kind;
-use crate::events::payload::{DispatchPayload, FromDispatchPayload};
+use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(

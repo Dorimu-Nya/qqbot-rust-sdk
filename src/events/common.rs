@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
+//! 在各种事件类型通用的数据结构定义
 
-// 放一些各个事件通用的模型
+use serde::{Deserialize, Serialize};
 
 /// 附件
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -1,18 +1,25 @@
-use super::c2c::event::{C2cEvent, C2cEventKind};
-use super::group::event::{GroupEvent, GroupEventKind};
-use super::guild::event::{ForumEvent, ForumEventKind, GuildEvent, GuildEventKind};
-use super::interaction::event::{InteractionEvent, InteractionEventKind};
-use super::message_reaction::event::{MessageReactionEvent, MessageReactionEventKind};
+use crate::events::c2c::event::{C2cEvent, C2cEventKind};
+use crate::events::group::event::{GroupEvent, GroupEventKind};
+use crate::events::guild::event::{ForumEvent, ForumEventKind, GuildEvent, GuildEventKind};
+use crate::events::interaction::event::{InteractionEvent, InteractionEventKind};
+use crate::events::message_reaction::event::{MessageReactionEvent, MessageReactionEventKind};
 use serde::{Deserialize, Serialize};
 
 /// 全部事件类型汇总分类
+///
+/// 以下的值根据回调配置页 <https://q.qq.com/qqbot/#/developer/webhook-setting> 提取做了分类
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Event {
+    /// 单聊事件
     C2cEvent(C2cEvent),
+    /// 群事件
     GroupEvent(GroupEvent),
+    /// 频道事件
     GuildEvent(GuildEvent),
+    /// 频道论坛事件
     ForumEvent(ForumEvent),
+    /// 互动事件
     InteractionEvent(InteractionEvent),
     MessageReactionEvent(MessageReactionEvent),
 }
