@@ -5,6 +5,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
+/// 通用数据结构的基础封装
+///
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/event-emit/payload.html#%E9%80%9A%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84>
 pub enum WebhookPayload {
     // opcode=0
     /// 服务端进行消息推送
@@ -18,8 +21,6 @@ pub enum WebhookPayload {
 }
 
 /// opcode为0时，服务端进行消息推送的消息对象
-/// 
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/event-emit/payload.html#%E9%80%9A%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DispatchPayload {
     /// 事件id
