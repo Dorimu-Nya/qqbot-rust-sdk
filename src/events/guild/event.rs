@@ -4,8 +4,8 @@ use super::guild::{ChannelData, GuildData};
 use super::member::GuildMemberEvent;
 use super::messages::GuildMessages;
 use super::open_forum::OpenForumEvent;
-use crate::events::payload::event::Event;
 use crate::events::event_kind;
+use crate::events::payload::event::Event;
 use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 

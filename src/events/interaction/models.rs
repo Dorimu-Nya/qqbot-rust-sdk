@@ -19,7 +19,7 @@ pub struct InteractionResolved {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 互动数据
-/// 
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/interaction_create.html#schema-interactiondata>
 pub struct InteractionData {
     #[serde(default, alias = "resoloved")]
@@ -36,7 +36,7 @@ pub struct Interaction {
     pub id: String,
     #[serde(rename = "type")]
     /// 消息类型： 11表示消息按钮; 12表示单聊快捷菜单; 13表示消息反馈; 14表示清空会话
-    /// 
+    ///
     /// 15表示进出故事集; 16表示切换智能体模型; 18表示授权; 19表示群授权; 20表示群授权状态变更
     pub kind: Option<i64>,
     /// 事件发生的场景：c2c、group、guild

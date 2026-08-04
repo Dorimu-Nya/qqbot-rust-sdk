@@ -1,6 +1,6 @@
-use super::models::{GroupAddRobotEvent, GroupMessage, GroupDelRobotEvent, GroupMsgRejectEvent};
-use crate::events::payload::event::Event;
+use super::models::{GroupAddRobotEvent, GroupDelRobotEvent, GroupMessage, GroupMsgRejectEvent};
 use crate::events::event_kind;
+use crate::events::payload::event::Event;
 use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 

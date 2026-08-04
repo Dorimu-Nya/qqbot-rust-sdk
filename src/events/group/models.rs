@@ -1,6 +1,6 @@
 use super::super::common::MessageAttachment;
-use serde::{Deserialize, Serialize};
 use crate::events::common::{ARKData, MessageScene, MsgElement, User};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 群消息
@@ -32,12 +32,12 @@ pub struct GroupMessage {
     /// 结构化卡片消息数据
     pub ark_data: ARKData,
     /// 消息元素列表
-    pub msg_elements: MsgElement
+    pub msg_elements: MsgElement,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 机器人加入群聊
-/// 
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_add_robot.html>
 pub struct GroupAddRobotEvent {
     /// 操作时间戳
@@ -50,7 +50,7 @@ pub struct GroupAddRobotEvent {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 机器人退出群聊
-/// 
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_del_robot.html>
 pub struct GroupDelRobotEvent {
     /// 操作时间戳
@@ -63,7 +63,7 @@ pub struct GroupDelRobotEvent {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 群聊消息接收关闭
-/// 
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_msg_reject.html>
 pub struct GroupMsgRejectEvent {
     /// 操作时间戳

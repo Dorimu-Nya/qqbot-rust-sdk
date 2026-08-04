@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员中的用户信息
-/// 
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/openapi/user/model.html#user>
 pub struct User {
     /// 用户ID
@@ -26,7 +26,7 @@ pub struct User {
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员对象(Member)
-/// 
+///
 /// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/member/model.html>
 ///
 /// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/openapi/member/model.html#member>

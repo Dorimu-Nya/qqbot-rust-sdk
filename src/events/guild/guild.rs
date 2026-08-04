@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道
-/// 
+///
 /// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/guild_create.html>
 ///
 /// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/guild_update.html>

@@ -1,8 +1,8 @@
 use super::models::{
     C2cMessage, C2cMsgReceiveEvent, C2cMsgRejectEvent, FriendAddEvent, FriendDelEvent,
 };
-use crate::events::payload::event::Event;
 use crate::events::event_kind;
+use crate::events::payload::event::Event;
 use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 

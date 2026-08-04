@@ -1,8 +1,8 @@
-use super::super::common::MessageAttachment;
 use super::super::common::ARKData;
+use super::super::common::MessageAttachment;
 use super::super::common::MessageScene;
-use serde::{Deserialize, Serialize};
 use crate::events::common::{MsgElement, User};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 单聊消息事件

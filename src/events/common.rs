@@ -1,7 +1,7 @@
 //! 在各种事件类型通用的数据结构定义
 
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 /// User
 ///
 /// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html#schema-user>
