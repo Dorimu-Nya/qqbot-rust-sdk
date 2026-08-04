@@ -1,6 +1,6 @@
 use super::audio::AudioOrLiveChannelMemberEvent;
 use super::forum::{ForumEventAuditResult, ForumEventPost, ForumEventReply, ForumEventThread};
-use super::guild::{ChannelEvent, GuildEventData};
+use super::guild::{ChannelData, GuildData};
 use super::member::GuildMemberEvent;
 use super::messages::GuildMessages;
 use super::open_forum::OpenForumEvent;
@@ -61,22 +61,22 @@ event_kind!(
         OpenForumThreadDelete(OpenForumEvent),
         /// 频道创建事件
         #[serde(rename = "GUILD_CREATE")]
-        GuildCreate(GuildEventData),
+        GuildCreate(GuildData),
         /// 频道信息变更事件
         #[serde(rename = "GUILD_UPDATE")]
-        GuildUpdate(GuildEventData),
+        GuildUpdate(GuildData),
         /// 频道删除事件
         #[serde(rename = "GUILD_DELETE")]
-        GuildDelete(GuildEventData),
+        GuildDelete(GuildData),
         /// 子频道创建事件
         #[serde(rename = "CHANNEL_CREATE")]
-        ChannelCreate(ChannelEvent),
+        ChannelCreate(ChannelData),
         /// 子频道修改事件
         #[serde(rename = "CHANNEL_UPDATE")]
-        ChannelUpdate(ChannelEvent),
+        ChannelUpdate(ChannelData),
         /// 子频道删除事件
         #[serde(rename = "CHANNEL_DELETE")]
-        ChannelDelete(ChannelEvent),
+        ChannelDelete(ChannelData),
         /// 新成员加入频道事件
         #[serde(rename = "GUILD_MEMBER_ADD")]
         GuildMemberAdd(GuildMemberEvent),
@@ -173,7 +173,7 @@ impl FromDispatchPayload for OpenForumEvent {
     }
 }
 
-impl FromDispatchPayload for GuildEventData {
+impl FromDispatchPayload for GuildData {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
             Event::GuildEvent(GuildEvent::GuildCreate(value))
@@ -184,7 +184,7 @@ impl FromDispatchPayload for GuildEventData {
     }
 }
 
-impl FromDispatchPayload for ChannelEvent {
+impl FromDispatchPayload for ChannelData {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
             Event::GuildEvent(GuildEvent::ChannelCreate(value))

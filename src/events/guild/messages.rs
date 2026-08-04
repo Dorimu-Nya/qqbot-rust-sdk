@@ -1,4 +1,4 @@
-use super::super::common::Attachment;
+use super::super::common::MessageAttachment;
 use super::member::{Member, User};
 use serde::{Deserialize, Serialize};
 
@@ -23,7 +23,7 @@ pub struct GuildMessages {
     /// 成员信息
     pub member: Option<Member>,
     /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
-    pub attachments: Option<Vec<Attachment>>,
+    pub attachments: Option<Vec<MessageAttachment>>,
     /// 消息序号
     pub seq: Option<u64>,
     /// 子频道内消息序号

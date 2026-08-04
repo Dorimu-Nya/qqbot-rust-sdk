@@ -25,17 +25,28 @@ pub struct User {
     pub union_user_account: Option<String>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 频道成员信息
+/// 频道成员对象(Member)
 /// 
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/member/model.html#MemberWithGuildID>
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/member/model.html>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/openapi/member/model.html#member>
+///
+/// 参考2 (deaf等字段来源于此): <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/member/get_members.html#%E7%A4%BA%E4%BE%8B>
 pub struct Member {
-    /// 加入时间
-    pub joined_at: Option<String>,
-    /// 角色列表
-    pub roles: Option<Vec<String>>,
+    /// 频道ID
+    ///
+    /// MemberWithGuildID特有
+    pub guild_id: Option<String>,
+    #[serde(default)]
+    /// 用户信息
+    pub user: Option<User>,
     #[serde(default)]
     /// 昵称
     pub nick: Option<String>,
+    /// 角色列表
+    pub roles: Option<Vec<String>>,
+    /// 加入时间
+    pub joined_at: Option<String>,
     #[serde(default)]
     /// 是否被禁言
     pub deaf: Option<bool>,
@@ -45,20 +56,16 @@ pub struct Member {
     #[serde(default)]
     /// 是否待审核
     pub pending: Option<bool>,
-    #[serde(default)]
-    /// 用户信息
-    pub user: Option<User>,
-    #[serde(default)]
-    /// 频道ID
-    pub guild_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 频道成员事件
-/// 
+///
+/// 在 MemberWithGuildID 基础上，增加 op_user_id 代表操作人。
+///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/guild_member.html#%E9%A2%91%E9%81%93%E6%88%90%E5%91%98%E4%BA%8B%E4%BB%B6>
 pub struct GuildMemberEvent {
-    #[serde(flatten)]
+    #[serde(flatten)] // 因为只是在 Member 对象上补充字段所以展开就行
     /// 成员信息
     pub member: Member,
     /// 操作人 ID
