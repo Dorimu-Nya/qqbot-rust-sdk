@@ -3,10 +3,14 @@ use serde::{Deserialize, Serialize};
 use crate::events::common::{ARKData, MessageScene, MsgElement, User};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 群 @ 消息
+/// 群消息
 ///
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_at_message_create.html>
-pub struct GroupAtMessage {
+/// at机器人和全量消息都是这个数据结构
+///
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_at_message_create.html>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_message_create.html>
+pub struct GroupMessage {
     /// 平台方消息ID，可以用于被动消息发送
     pub id: String,
     /// 发送者

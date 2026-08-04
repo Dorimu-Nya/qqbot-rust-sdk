@@ -1,4 +1,4 @@
-use super::models::{GroupAddRobotEvent, GroupAtMessage, GroupDelRobotEvent, GroupMsgRejectEvent};
+use super::models::{GroupAddRobotEvent, GroupMessage, GroupDelRobotEvent, GroupMsgRejectEvent};
 use crate::events::payload::event::Event;
 use crate::events::event_kind;
 use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
@@ -9,9 +9,16 @@ event_kind!(
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
     pub enum GroupEvent {
-        /// 群消息事件 AT 事件
+        /// 群@机器人消息
+        ///
+        /// 用户在群里@机器人发送消息时触发。这是机器人最常接收的事件。 content 字段已自动去除@机器人的前缀。
         #[serde(rename = "GROUP_AT_MESSAGE_CREATE")]
-        GroupAtMessageCreate(GroupAtMessage),
+        GroupAtMessageCreate(GroupMessage),
+        /// 群消息（全量模式）
+        ///
+        /// 当机器人开启了"接收所有消息"功能后，群里的每一条消息（不限于@机器人）都会推送此事件。各字段含义与 GROUP_AT_MESSAGE_CREATE 完全一致。
+        #[serde(rename = "GROUP_MESSAGE_CREATE")]
+        GroupMessageCreate(GroupMessage),
         /// 群添加机器人
         #[serde(rename = "GROUP_AT_ROBOT")]
         GroupAddRobot(GroupAddRobotEvent),
@@ -30,7 +37,7 @@ event_kind!(
     }
 );
 
-impl FromDispatchPayload for GroupAtMessage {
+impl FromDispatchPayload for GroupMessage {
     fn from(payload: &DispatchPayload) -> Option<Self> {
         match &payload.event {
             Event::GroupEvent(GroupEvent::GroupAtMessageCreate(value)) => Some(value.clone()),
