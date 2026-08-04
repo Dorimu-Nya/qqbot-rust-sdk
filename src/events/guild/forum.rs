@@ -1,15 +1,18 @@
+//! 论坛对象(forum)
+//!
+//! 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#>
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-/// 论坛事件对象
+/// 主题事件 Thread
 ///
-/// <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#>
+/// - 话题频道内发表的主帖称为主题
+/// - 该事件在话题频道内新发表主题或删除时生产事件中包含该对象
+///
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#thread>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/forum.html#%E4%B8%BB%E9%A2%98%E4%BA%8B%E4%BB%B6>
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 主题事件
-///
-/// 话题频道内发表的主帖称为主题
-///
-/// 该事件在话题频道内新发表主题或删除时生产事件中包含该对象
 pub struct ForumEventThread {
     /// 频道ID
     pub guild_id: String,
@@ -20,8 +23,13 @@ pub struct ForumEventThread {
     /// 主帖内容
     pub thread_info: ForumEventThreadInfo,
 }
+
+/// ThreadInfo
+///
+/// - 帖子事件包含的主帖内容相关信息
+///
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#threadinfo>
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-/// 帖子事件包含的主帖内容相关信息
 pub struct ForumEventThreadInfo {
     #[serde(default, alias = "id")]
     /// 主帖ID
@@ -38,12 +46,15 @@ pub struct ForumEventThreadInfo {
     #[serde(flatten)]
     pub extra: Map<String, Value>,
 }
+/// 帖子事件 Post
+///
+/// - 话题频道内对主题的评论称为帖子
+/// - 话题频道内对帖子主题评论或删除时生产事件中包含该对象
+///
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#post>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/forum.html#%E5%B8%96%E5%AD%90%E4%BA%8B%E4%BB%B6>
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 帖子事件
-///
-/// 话题频道内对主题的评论称为帖子
-///
-/// 话题频道内对帖子主题评论或删除时生产事件中包含该对象
 pub struct ForumEventPost {
     /// 频道ID
     pub guild_id: String,
@@ -55,10 +66,11 @@ pub struct ForumEventPost {
     pub post_info: ForumEventPostInfo,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-/// 帖子内容信息
+/// PostInfo
 ///
-/// 帖子事件包含的帖子内容信息
+/// - 帖子内容信息
+/// - 帖子事件包含的帖子内容信息
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ForumEventPostInfo {
     #[serde(default, alias = "id")]
     /// 帖子ID
@@ -76,12 +88,15 @@ pub struct ForumEventPostInfo {
     pub extra: Map<String, Value>,
 }
 
+/// 回复事件 Reply
+///
+/// - 话题频道对帖子回复或删除时生产该事件中包含该对象
+/// - 话题频道对帖子回复或删除时生产该事件中包含该对象
+///
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#reply>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/forum.html#%E5%9B%9E%E5%A4%8D%E4%BA%8B%E4%BB%B6>
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 回复事件
-///
-/// 话题频道对帖子回复或删除时生产该事件中包含该对象
-///
-/// 话题频道对帖子回复或删除时生产该事件中包含该对象
 pub struct ForumEventReply {
     /// 频道ID
     pub guild_id: String,
@@ -94,17 +109,20 @@ pub struct ForumEventReply {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-/// 回复事件包含的回复内容信息
+/// ReplyInfo
+///
+/// - 回复事件包含的回复内容信息
+///
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#replyinfo>
 pub struct ForumEventReplyInfo {
-    #[serde(default, alias = "id")]
-    /// 回复ID
-    pub reply_id: Option<String>,
     #[serde(default)]
     /// 主题ID
     pub thread_id: Option<String>,
     #[serde(default)]
     /// 帖子ID
     pub post_id: Option<String>,
+    /// 回复ID
+    pub reply_id: Option<String>,
     #[serde(default)]
     /// 回复内容
     pub content: Option<RichTextValue>,
@@ -115,8 +133,14 @@ pub struct ForumEventReplyInfo {
     pub extra: Map<String, Value>,
 }
 
+/// 帖子审核事件 AuditResult
+///
+/// - 论坛帖子审核结果事件
+///
+/// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#auditresult>
+///
+/// 参考2: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/forum.html#%E5%B8%96%E5%AD%90%E5%AE%A1%E6%A0%B8%E4%BA%8B%E4%BB%B6>
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 论坛帖子审核结果事件
 pub struct ForumEventAuditResult {
     /// 频道ID
     pub guild_id: String,
@@ -124,6 +148,12 @@ pub struct ForumEventAuditResult {
     pub channel_id: String,
     /// 作者ID
     pub author_id: String,
+    /// 主题ID
+    pub thread_id: Option<String>,
+    /// 帖子ID
+    pub post_id: Option<String>,
+    /// 回复ID
+    pub reply_id: Option<String>,
     #[serde(rename = "type")]
     /// 审核类型
     pub kind: ForumEventAuditType,
@@ -131,15 +161,11 @@ pub struct ForumEventAuditResult {
     pub result: Option<i64>,
     /// 错误信息
     pub err_msg: Option<String>,
-    /// 主题ID
-    pub thread_id: Option<String>,
-    /// 帖子ID
-    pub post_id: Option<String>,
-    /// 回复ID
-    pub reply_id: Option<String>,
 }
 
-/// 论坛帖子审核类型
+/// AuditType
+///
+/// - 审核的类型
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ForumEventAuditType {
     /// 帖子
@@ -164,8 +190,12 @@ pub enum RichTextValue {
     Other(Value),
 }
 
+/// RichObject
+///
+/// - 富文本对象
+///
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#richobject>
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// 富文本对象
 pub struct RichObject {
     #[serde(rename = "type")]
     /// 富文本类型
