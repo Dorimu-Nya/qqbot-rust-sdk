@@ -1,5 +1,5 @@
 use super::{Result, SignatureError};
-use ed25519_dalek::{Signer, SigningKey, VerifyingKey};
+use ed25519_dalek::{Signer, SigningKey};
 
 /// 计算 webhook 签名后的字符串
 ///
