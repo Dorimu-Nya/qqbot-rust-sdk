@@ -32,7 +32,7 @@ macro_rules! event_kind {
                 $($enum_variants)*
             }
 
-            /// 与事件枚举一一对应、不携带事件载荷的注册键。
+            /// 与事件类型列表对应、但不携带事件载荷的枚举。
             #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::EnumIter)]
             $vis enum [<$event Kind>] {
                 $($kind_variants)*

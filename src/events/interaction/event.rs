@@ -5,7 +5,7 @@ use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
-    /// 互动事件
+    /// 互动事件的事件类型列表
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
     pub enum InteractionEvent {

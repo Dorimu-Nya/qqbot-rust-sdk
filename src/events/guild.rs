@@ -2,7 +2,7 @@
 
 /// 音频/直播子频道成员的事件数据结构
 pub mod audio;
-/// 事件类型
+/// 频道的事件类型列表
 pub mod event;
 /// 论坛相关的事件数据结构
 pub mod forum;

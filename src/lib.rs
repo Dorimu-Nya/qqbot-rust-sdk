@@ -1,4 +1,6 @@
-//! 基于 [QQ官方机器人文档](https://bot.q.qq.com/wiki/develop/api-v2/) 中声明的事件数据模型、API及相关所需要的工具类所开发的QQ官方机器人，仅提供了事件类型、数据模型、QQ官方API的定义等。
+//! 基于 [QQ官方机器人文档](https://bot.q.qq.com/wiki/develop/api-v2/) 中声明的事件数据模型、API接口封装及相关所需要的工具类所开发的QQ官方机器人SDK。
+//!
+//! 仅提供了事件类型、数据模型、QQ官方API的定义等。
 //!
 //! 目前是围绕着Webhook的需要去开发的，关于在Websocket连接方式仅有的一些数据可能有缺失，后面会慢慢补上。
 //!
@@ -9,9 +11,13 @@
 pub mod events;
 
 #[cfg(feature = "openapi")]
-/// 提供根据文档提供的QQ机器人相关的OpenApi接口。 参考： <https://bot.q.qq.com/wiki/develop/api-v2/autogen/>
+/// 提供根据文档提供的QQ机器人相关的OpenApi接口。
+///
+/// 参考： <https://bot.q.qq.com/wiki/develop/api-v2/autogen/>
 pub mod openapi;
 
 #[cfg(feature = "signature")]
-/// 提供根据文档开发的签名校验逻辑。 参考： <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/interface-framework/sign.html>
+/// 提供根据文档开发的签名校验逻辑。
+///
+/// 参考： <https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/interface-framework/sign.html>
 pub mod signature;

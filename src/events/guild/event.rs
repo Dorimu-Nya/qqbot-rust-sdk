@@ -10,7 +10,7 @@ use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
-    /// 频道事件
+    /// 频道的事件类型列表
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "t", content = "d")]
     pub enum GuildEvent {
