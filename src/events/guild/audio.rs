@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 /// 音频/直播子频道成员事件
 ///
 /// 触发场景：音频/直播子频道成员进入或退出时产生
+///
+/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/role/audio_or_live_channel_member.html>
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AudioOrLiveChannelMemberEvent {
     /// 频道ID
