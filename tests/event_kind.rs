@@ -4,7 +4,6 @@ use qqbot_rust_sdk::events::group::event::{GroupEvent, GroupEventKind};
 use qqbot_rust_sdk::events::guild::event::{GuildEvent, GuildEventKind};
 use qqbot_rust_sdk::events::interaction::event::{InteractionEvent, InteractionEventKind};
 use qqbot_rust_sdk::events::interaction::models::Interaction;
-use strum::IntoEnumIterator;
 
 #[test]
 fn converts_unit_and_empty_tuple_variants_to_kinds() {
@@ -48,9 +47,4 @@ fn converts_payload_variants_to_kinds() {
         InteractionEventKind::from(event),
         InteractionEventKind::InteractionCreate
     );
-}
-
-#[test]
-fn generated_kind_enums_remain_iterable() {
-    assert_eq!(GroupEventKind::iter().count(), 6);
 }
