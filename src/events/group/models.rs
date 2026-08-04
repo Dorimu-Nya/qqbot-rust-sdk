@@ -1,14 +1,6 @@
-use super::super::common::Attachment;
+use super::super::common::MessageAttachment;
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-/// 群消息作者
-/// 
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_message_create.html#schema-user>
-pub struct GroupAuthor {
-    /// 成员 openid
-    pub member_openid: String,
-}
+use crate::events::common::{ARKData, MessageScene, MsgElement, User};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 群 @ 消息
@@ -18,18 +10,25 @@ pub struct GroupAtMessage {
     /// 平台方消息ID，可以用于被动消息发送
     pub id: String,
     /// 发送者
-    pub author: GroupAuthor,
-    /// 文本消息内容
+    pub author: User,
+    /// 消息文本内容（已去除@机器人的前缀）
     pub content: Option<String>,
-    /// 消息生产时间（RFC3339）
-    pub timestamp: Option<String>,
-    /// 群 openid
+    /// 群 OpenID
     pub group_openid: String,
+    /// 消息发送时间，RFC3339 格式
+    pub timestamp: Option<String>,
+    /// 消息内容类型
+    pub message_type: i32,
+    /// 消息场景上下文
+    pub message_scene: MessageScene,
     /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
-    pub attachments: Option<Vec<Attachment>>,
-    #[serde(default)]
-    /// 消息序列
-    pub msg_seq: Option<u64>,
+    pub attachments: Vec<MessageAttachment>,
+    /// 消息中@的用户列表
+    pub mentions: Vec<User>,
+    /// 结构化卡片消息数据
+    pub ark_data: ARKData,
+    /// 消息元素列表
+    pub msg_elements: MsgElement
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

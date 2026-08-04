@@ -1,55 +1,32 @@
-use super::super::common::Attachment;
+use super::super::common::MessageAttachment;
+use super::super::common::ARKData;
+use super::super::common::MessageScene;
 use serde::{Deserialize, Serialize};
-use crate::events::common::ARKData;
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-/// 单聊消息作者
-///
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html#schema-user>
-pub struct C2cUser {
-    /// 作者id
-    pub id: Option<String>,
-    /// 用户openid
-    pub user_openid: String,
-    /// 联合openid
-    pub union_openid: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-/// 消息场景
-///
-/// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html#schema-messagescene>
-pub struct C2cMessageScene {
-    /// 场景来源。default=默认聊天窗口
-    pub source: Option<String>,
-    /// 扩展数据列表，key=value 格式: msg_idx=消息索引, 用于引用场景 ref_msg_idx=引用的消息索引 auth_token=鉴权令牌
-    pub ext: Option<Vec<String>>,
-}
+use crate::events::common::{MsgElement, User};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// 单聊消息事件
 ///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html#%E4%BA%8B%E4%BB%B6>
 pub struct C2cMessage {
-    /// 平台方消息ID，可以用于被动消息发送
+    /// 消息 ID，可用于被动回复和撤回
     pub id: String,
-    /// 发送者
-    pub author: C2cUser,
-    /// 文本消息内容
+    /// 发送者（user_openid 有值）
+    pub author: User,
+    /// 消息文本内容
     pub content: Option<String>,
-    /// 消息生产时间（RFC3339）
+    /// 消息发送时间，RFC3339 格式
     pub timestamp: Option<String>,
-    /// 消息类型
+    /// 消息内容类型: 0=普通文本, 3=结构化卡片, 101=并行消息, 102=聊天记录, 103=引用消息
     pub message_type: Option<u32>,
-    /// 场景信息
-    pub message_scene: Option<C2cMessageScene>,
+    /// 消息场景上下文（含消息索引、鉴权令牌等）
+    pub message_scene: Option<MessageScene>,
+    /// 消息附件（图片、文件、语音等）
+    pub attachments: Vec<MessageAttachment>,
     /// 结构化卡片消息数据（message_type=3 时有值）
     pub ark_data: Option<ARKData>,
-    /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
-    pub attachments: Option<Vec<Attachment>>,
-    #[serde(default)]
-    /// 消息序列
-    pub msg_seq: Option<u64>,
+    /// 消息元素列表（message_type=103 引用消息时包含被引用内容）
+    pub msg_elements: Vec<MsgElement>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
