@@ -4,6 +4,7 @@ use qqbot_rust_sdk::signature::{sign_webhook_validation, SignatureError};
 
 #[test]
 fn verify_signature() {
+    // 数据案例来自 https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/event-emit/webhook.html
     let secret = "DG5g3B4j9X2KOErG";
     let plain_token = "Arq0D5A61EgUu4OxUvOp";
     let event_ts = 1725442341.to_string();

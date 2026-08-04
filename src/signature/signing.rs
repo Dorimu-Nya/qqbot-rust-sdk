@@ -1,7 +1,17 @@
 use super::{Result, SignatureError};
 use ed25519_dalek::{Signer, SigningKey, VerifyingKey};
 
-/// 生成 webhook 校验回包签名（`event_ts + plain_token`）。
+/// 计算 webhook 签名后的字符串
+///
+/// # Parameters
+///
+/// - `bot_secret`: 机器人密钥
+/// - `event_ts`: 计算签名使用时间戳
+/// - `plain_token`: 需要计算签名的字符串
+///
+/// # Returns
+///
+/// 返回计算后的签名
 pub fn sign_webhook_validation(
     bot_secret: &str,
     event_ts: &str,
@@ -13,13 +23,6 @@ pub fn sign_webhook_validation(
     payload.extend_from_slice(plain_token.as_bytes());
     let signature = signing_key.sign(&payload);
     Ok(hex::encode(signature.to_bytes()))
-}
-
-/// 使用 Bot Secret 推导 Ed25519 公钥。
-pub fn public_key_from_bot_secret(bot_secret: &str) -> Result<Vec<u8>> {
-    let signing_key = signing_key_from_bot_secret(bot_secret)?;
-    let verifying_key = VerifyingKey::from(&signing_key);
-    Ok(verifying_key.to_bytes().to_vec())
 }
 
 /// 使用 Bot Secret 推导 Ed25519 私钥种子。
