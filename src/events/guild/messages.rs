@@ -27,9 +27,9 @@ pub struct GuildMessages {
     /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
     pub attachments: Option<Vec<MessageAttachment>>,
     /// embed
-    pub embeds: Vec<MessageEmbed>,
+    pub embeds: Option<Vec<MessageEmbed>>,
     /// 消息中@的人
-    pub mentions: Vec<User>,
+    pub mentions: Option<Vec<User>>,
     /// 消息创建者的member信息
     pub member: Option<Member>,
     /// ark消息
@@ -87,7 +87,7 @@ pub struct MessageArk {
     /// ark模板id（需要先申请）
     pub template_id: u64,
     /// kv值列表
-    pub kv: Vec<MessageArkKv>,
+    pub kv: Option<Vec<MessageArkKv>>,
 }
 
 /// MessageArkKv
@@ -109,7 +109,7 @@ pub struct MessageArkKv {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageArkObj {
     /// ark objkv列表
-    pub obj_kv: Vec<MessageArkObjKv>,
+    pub obj_kv: Option<Vec<MessageArkObjKv>>,
 }
 
 /// MessageArkObjKv

@@ -26,9 +26,9 @@ pub struct GroupMessage {
     /// 消息场景上下文
     pub message_scene: MessageScene,
     /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
-    pub attachments: Vec<MessageAttachment>,
+    pub attachments: Option<Vec<MessageAttachment>>,
     /// 消息中@的用户列表
-    pub mentions: Vec<User>,
+    pub mentions: Option<Vec<User>>,
     /// 结构化卡片消息数据
     pub ark_data: ARKData,
     /// 消息元素列表

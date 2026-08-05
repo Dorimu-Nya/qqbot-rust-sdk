@@ -22,11 +22,11 @@ pub struct C2cMessage {
     /// 消息场景上下文（含消息索引、鉴权令牌等）
     pub message_scene: Option<MessageScene>,
     /// 消息附件（图片、文件、语音等）
-    pub attachments: Vec<MessageAttachment>,
+    pub attachments: Option<Vec<MessageAttachment>>,
     /// 结构化卡片消息数据（message_type=3 时有值）
     pub ark_data: Option<ARKData>,
     /// 消息元素列表（message_type=103 引用消息时包含被引用内容）
-    pub msg_elements: Vec<MsgElement>,
+    pub msg_elements: Option<Vec<MsgElement>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
