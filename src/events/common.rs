@@ -118,9 +118,9 @@ pub struct MsgElement {
     /// 消息正文内容
     pub content: Option<String>,
     /// 该元素携带的附件
-    pub attachments: Vec<MessageAttachment>,
+    pub attachments: Option<Vec<MessageAttachment>>,
     /// 结构化卡片消息数据（message_type=3 时有值）
     pub ark_data: Option<ARKData>,
     /// 嵌套消息元素列表（递归结构）
-    pub msg_elements: Vec<MsgElement>,
+    pub msg_elements: Option<Vec<MsgElement>>,
 }

@@ -32,7 +32,7 @@ pub struct GroupMessage {
     /// 结构化卡片消息数据
     pub ark_data: Option<ARKData>,
     /// 消息元素列表
-    pub msg_elements: Option<MsgElement>,
+    pub msg_elements: Option<Vec<MsgElement>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
