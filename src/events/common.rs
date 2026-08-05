@@ -20,14 +20,31 @@ pub struct User {
     /// 跨应用统一用户 OpenID（可能为空）
     pub union_openid: Option<String>,
     /// 跨应用统一用户账号（可能为空）
-    pub union_user_account: String,
+    pub union_user_account: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+/// 单聊场景用户
+pub struct C2cUser {
+    /// 通用用户信息
+    #[serde(flatten)]
+    pub user: User,
     /// 用户 OpenID（单聊场景使用）
     pub user_openid: String,
-    /// 群成员 OpenID（群聊场景使用）
-    pub member_open_id: String,
-    /// 群内角色。member=普通成员, admin=管理员, owner=群主
-    pub membership_role: String,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+/// 群聊场景用户
+pub struct GroupUser {
+    /// 通用用户信息
+    #[serde(flatten)]
+    pub user: User,
+    /// 群成员 OpenID（群聊场景使用）
+    pub member_openid: String,
+    /// 群内角色。member=普通成员, admin=管理员, owner=群主
+    pub member_role: String,
+}
+
 /// 消息场景
 ///
 /// 参考1: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html#schema-messagescene>
@@ -40,7 +57,7 @@ pub struct MessageScene {
     /// 场景来源。default=默认聊天窗口
     pub source: Option<String>,
     /// 扩展数据列表，key=value 格式: msg_idx=消息索引, 用于引用场景 ref_msg_idx=引用的消息索引 auth_token=鉴权令牌
-    pub ext: Vec<String>,
+    pub ext: Option<Vec<String>>,
 }
 
 /// 消息附件

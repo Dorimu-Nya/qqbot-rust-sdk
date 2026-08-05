@@ -1,5 +1,5 @@
 use super::super::common::MessageAttachment;
-use crate::events::common::{ARKData, MessageScene, MsgElement, User};
+use crate::events::common::{ARKData, GroupUser, MessageScene, MsgElement, User};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -14,7 +14,7 @@ pub struct GroupMessage {
     /// 平台方消息ID，可以用于被动消息发送
     pub id: String,
     /// 发送者
-    pub author: User,
+    pub author: GroupUser,
     /// 消息文本内容（已去除@机器人的前缀）
     pub content: Option<String>,
     /// 群 OpenID
@@ -30,9 +30,9 @@ pub struct GroupMessage {
     /// 消息中@的用户列表
     pub mentions: Option<Vec<User>>,
     /// 结构化卡片消息数据
-    pub ark_data: ARKData,
+    pub ark_data: Option<ARKData>,
     /// 消息元素列表
-    pub msg_elements: MsgElement,
+    pub msg_elements: Option<MsgElement>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -1,7 +1,7 @@
 use super::super::common::ARKData;
 use super::super::common::MessageAttachment;
 use super::super::common::MessageScene;
-use crate::events::common::{MsgElement, User};
+use crate::events::common::{C2cUser, MsgElement};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -12,7 +12,7 @@ pub struct C2cMessage {
     /// 消息 ID，可用于被动回复和撤回
     pub id: String,
     /// 发送者（user_openid 有值）
-    pub author: User,
+    pub author: C2cUser,
     /// 消息文本内容
     pub content: Option<String>,
     /// 消息发送时间，RFC3339 格式
