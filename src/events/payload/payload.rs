@@ -1,5 +1,6 @@
+use std::collections::HashMap;
 use super::event::Event;
-use super::opcode::{DispatchOp, HttpCallbackAckOp, WebhookAddressVerifyOp};
+use super::opcode::{DispatchOp, HeartbeatACK, Hello, HttpCallbackAckOp, Identify, Resume, WebhookAddressVerifyOp};
 use crate::events::validation::ValidationRequest;
 use serde::{Deserialize, Serialize};
 
@@ -45,6 +46,52 @@ impl FromDispatchPayload for DispatchPayload {
     fn from(req: &DispatchPayload) -> Option<Self> {
         Some(req.clone())
     }
+}
+/// opcode为2时，websocket 登录所发送的包 用于获得session
+#[derive(Debug, Serialize, Deserialize)]
+pub struct IdentifyPayload {
+    pub op: Identify,
+    pub d: IdentifyData,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct IdentifyData {
+    pub token: String,
+    pub indents: u64,
+    pub shard: (u8, u8),
+    pub properties: Option<HashMap<String, String>>
+}
+
+/// opcode为6时，websocket 恢复所发送的包
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ResumePayload {
+    pub op: Resume,
+    pub d: ResumeData,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ResumeData {
+    pub token: String,
+    pub session_id: String,
+    pub seq: u64,
+}
+
+/// opcode为10时 所接收的包
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HelloPayload {
+    pub op: Hello,
+    pub d: HelloData,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HelloData {
+    pub heartbeat_interval: u64,
+}
+
+/// opcode为11时，心跳所需要的回应
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HeartbeatAckPayload {
+    pub op: HeartbeatACK,
 }
 
 /// opcode为12时，http 回调模式的回包
