@@ -20,7 +20,7 @@ event_kind!(
         #[serde(rename = "GROUP_MESSAGE_CREATE")]
         GroupMessageCreate(GroupMessage),
         /// 群添加机器人
-        #[serde(rename = "GROUP_AT_ROBOT")]
+        #[serde(rename = "GROUP_ADD_ROBOT")]
         GroupAddRobot(GroupAddRobotEvent),
         /// 群移除机器人
         #[serde(rename = "GROUP_DEL_ROBOT")]
