@@ -60,16 +60,16 @@ pub struct GroupMentionUser {
     /// 通用用户信息
     #[serde(flatten)]
     pub user: GroupUser,
-    scope: MentionScopeSingle,
-    is_you: bool,
+    pub scope: MentionScopeSingle,
+    pub is_you: bool,
 }
 
 /// @全体成员 时的结构体
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GroupMentionAll {
-    username: String,
-    scope: MentionScopeAll,
-    is_you: bool,
+    pub username: String,
+    pub scope: MentionScopeAll,
+    pub is_you: bool,
 }
 // 吐槽一下上面这些文档里没有
 
