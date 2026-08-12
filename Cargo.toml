@@ -33,7 +33,7 @@ signature = ["dep:ed25519-dalek", "dep:hex", "dep:thiserror"]
 
 [dependencies]
 async-trait = { version = "0.1", optional = true }
-ed25519-dalek = { version = "2", optional = true }
+ed25519-dalek = { version = "3", optional = true }
 hex = { version = "0.4", optional = true }
 http = { version = "1", optional = true }
 paste = { version = "1", optional = true }
