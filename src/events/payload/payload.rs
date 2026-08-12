@@ -35,18 +35,6 @@ pub struct DispatchPayload {
     pub event: Event,
 }
 
-/// 从完整事件载荷中提取事件处理器参数。
-///
-/// 返回 `None` 表示当前载荷不包含该类型；事件处理器会跳过本次调用。
-pub trait FromDispatchPayload: Sized {
-    fn from(req: &DispatchPayload) -> Option<Self>;
-}
-
-impl FromDispatchPayload for DispatchPayload {
-    fn from(req: &DispatchPayload) -> Option<Self> {
-        Some(req.clone())
-    }
-}
 /// opcode为2时，websocket 登录所发送的包 用于获得session
 #[derive(Debug, Serialize, Deserialize)]
 pub struct IdentifyPayload {

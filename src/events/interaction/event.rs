@@ -1,7 +1,5 @@
 use super::models::Interaction;
 use crate::events::event_kind;
-use crate::events::payload::event::Event;
-use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
@@ -14,14 +12,3 @@ event_kind!(
         InteractionCreate(Interaction),
     }
 );
-
-impl FromDispatchPayload for Interaction {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::InteractionEvent(InteractionEvent::InteractionCreate(value)) => {
-                Some(value.clone())
-            }
-            _ => None,
-        }
-    }
-}

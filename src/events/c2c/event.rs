@@ -2,8 +2,6 @@ use super::models::{
     C2cMessage, C2cMsgReceiveEvent, C2cMsgRejectEvent, FriendAddEvent, FriendDelEvent,
 };
 use crate::events::event_kind;
-use crate::events::payload::event::Event;
-use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
@@ -28,48 +26,3 @@ event_kind!(
         C2cMsgReceive(C2cMsgReceiveEvent),
     }
 );
-
-impl FromDispatchPayload for C2cMessage {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::C2cEvent(C2cEvent::C2cMessageCreate(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for FriendAddEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::C2cEvent(C2cEvent::FriendAdd(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for FriendDelEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::C2cEvent(C2cEvent::FriendDel(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for C2cMsgRejectEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::C2cEvent(C2cEvent::C2cMsgReject(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for C2cMsgReceiveEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::C2cEvent(C2cEvent::C2cMsgReceive(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}

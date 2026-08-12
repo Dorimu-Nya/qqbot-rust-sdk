@@ -1,7 +1,5 @@
 use super::reaction::MessageReaction;
 use crate::events::event_kind;
-use crate::events::payload::event::Event;
-use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
@@ -17,15 +15,3 @@ event_kind!(
         MessageReactionRemove(MessageReaction),
     }
 );
-
-impl FromDispatchPayload for MessageReaction {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::MessageReactionEvent(MessageReactionEvent::MessageReactionAdd(value))
-            | Event::MessageReactionEvent(MessageReactionEvent::MessageReactionRemove(value)) => {
-                Some(value.clone())
-            }
-            _ => None,
-        }
-    }
-}

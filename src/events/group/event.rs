@@ -1,7 +1,5 @@
 use super::models::{GroupAddRobotEvent, GroupDelRobotEvent, GroupMessage, GroupMsgRejectEvent};
 use crate::events::event_kind;
-use crate::events::payload::event::Event;
-use crate::events::payload::payload::{DispatchPayload, FromDispatchPayload};
 use serde::{Deserialize, Serialize};
 
 event_kind!(
@@ -36,40 +34,3 @@ event_kind!(
         SubscribeMessageStatus,
     }
 );
-
-impl FromDispatchPayload for GroupMessage {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::GroupEvent(GroupEvent::GroupAtMessageCreate(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for GroupAddRobotEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::GroupEvent(GroupEvent::GroupAddRobot(value))
-            | Event::GroupEvent(GroupEvent::GroupMsgReceive(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for GroupDelRobotEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::GroupEvent(GroupEvent::GroupDelRobot(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl FromDispatchPayload for GroupMsgRejectEvent {
-    fn from(payload: &DispatchPayload) -> Option<Self> {
-        match &payload.event {
-            Event::GroupEvent(GroupEvent::GroupMsgReject(value)) => Some(value.clone()),
-            _ => None,
-        }
-    }
-}
