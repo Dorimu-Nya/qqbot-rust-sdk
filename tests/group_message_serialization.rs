@@ -1,6 +1,6 @@
 #![cfg(feature = "events")]
 
-use qqbot_rust_sdk::events::group::models::GroupMessage;
+use qqbot_rust_sdk::events::group::models::{GroupMention, GroupMessage};
 use serde_json::json;
 
 #[test]
@@ -187,5 +187,196 @@ fn serializes_and_deserializes_group_message_with_message_elements() {
     assert_eq!(
         serialized["message_scene"]["ext"][2],
         json!("ref_msg_idx=TMP_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+    );
+}
+
+#[test]
+fn serializes_and_deserializes_group_message_with_all_mention() {
+    let input = json!({
+        "op": 0,
+        "id": "GROUP_MESSAGE_CREATE:2eys9hem80qmfgws0txqocr3vy6qyjyyelxar88su1xqkgxwpynhysl6q6ws849",
+        "d": {
+            "id": "ROBOT1.0_2eys9HEM80qMFgWs0Tx.QNuTBavm.9nqbRhirAI4jntPgYH8j7b1GhDEd6gGr61-OB1uvyOI1fGyQCJXOh5nfFNq7PfpPFCZNAhZuJqZ1CDPlNcCu0N7N5SmoOzGYJpn",
+            "content": "<@all> ",
+            "timestamp": "2026-08-12T10:06:32+08:00",
+            "author": {
+                "id": "8612C390E5716C0608A7A4E526C1EA45",
+                "username": "✪sheip9",
+                "bot": false,
+                "member_openid": "8612C390E5716C0608A7A4E526C1EA45",
+                "member_role": "owner",
+                "union_openid": ""
+            },
+            "mentions": [{
+                "username": "全体成员",
+                "scope": "all",
+                "is_you": true
+            }],
+            "group_id": "5AEE0B71A81D3889E610D3273453F4D3",
+            "group_openid": "5AEE0B71A81D3889E610D3273453F4D3",
+            "message_scene": {
+                "source": "default",
+                "ext": [
+                    "msg_idx=REFIDX_0Vhe0GMkmh0un8qH50kD+MtG81ovPjw88HwjHppK6Gc=",
+                    "auth_token=30i6ggAf91e7aHXthPX-FLale4DzRgf12Wh5DKLdhbND1MaI9RMtV1xvS6fYFhENU3JwwET9p7HUSNFzDQzIIDZngvd5irC5f-q3AgOfn8RPPCS3jYlcX8CrFregJoQ"
+                ]
+            },
+            "message_type": 0
+        },
+        "t": "GROUP_MESSAGE_CREATE"
+    });
+
+    let message: GroupMessage = serde_json::from_value(input["d"].clone()).unwrap();
+    let mentions = message.mentions.as_ref().unwrap();
+
+    assert_eq!(message.content.as_deref(), Some("<@all> "));
+    assert_eq!(message.author.user.username, "✪sheip9");
+    assert_eq!(message.author.user.union_openid.as_deref(), Some(""));
+    assert_eq!(message.author.member_role, "owner");
+    assert_eq!(message.group_openid, "5AEE0B71A81D3889E610D3273453F4D3");
+    assert_eq!(mentions.len(), 1);
+    assert!(matches!(&mentions[0], GroupMention::All(_)));
+
+    let serialized = serde_json::to_value(&message).unwrap();
+
+    assert_eq!(serialized["mentions"][0]["username"], json!("全体成员"));
+    assert_eq!(serialized["mentions"][0]["scope"], json!("all"));
+    assert_eq!(serialized["mentions"][0]["is_you"], json!(true));
+    assert_eq!(
+        serialized["message_scene"]["ext"],
+        input["d"]["message_scene"]["ext"]
+    );
+}
+
+#[test]
+fn serializes_and_deserializes_group_message_with_single_mentions() {
+    let input = json!({
+        "op": 0,
+        "id": "GROUP_MESSAGE_CREATE:2eys9hem80qmfgws0txqoxiicynozkxo8whalrhg8rxqkgxwpynhysl6q6ws849",
+        "d": {
+            "id": "ROBOT1.0_2eys9HEM80qMFgWs0Tx.QPp1hD2DOYK6QCkzpojmH4DBptJEMom4NiSFT2-bbTQdL264SMAftX2KdJLQfWRSBMUKS6CQO8P05TVQoQ3a5PxUiF3PQ7ZIcqjqQuz3oPNR",
+            "content": "<@D67BAF0591F086CEBF21403C3404BCAA> <@8612C390E5716C0608A7A4E526C1EA45> ",
+            "timestamp": "2026-08-12T10:07:30+08:00",
+            "author": {
+                "id": "8612C390E5716C0608A7A4E526C1EA45",
+                "username": "✪sheip9",
+                "bot": false,
+                "member_openid": "8612C390E5716C0608A7A4E526C1EA45",
+                "member_role": "owner",
+                "union_openid": ""
+            },
+            "mentions": [{
+                "id": "D67BAF0591F086CEBF21403C3404BCAA",
+                "username": "爱丽丝",
+                "bot": true,
+                "member_openid": "D67BAF0591F086CEBF21403C3404BCAA",
+                "scope": "single",
+                "is_you": true,
+                "member_role": "member"
+            }, {
+                "id": "8612C390E5716C0608A7A4E526C1EA45",
+                "username": "✪sheip9",
+                "bot": false,
+                "member_openid": "8612C390E5716C0608A7A4E526C1EA45",
+                "scope": "single",
+                "is_you": false,
+                "member_role": "owner"
+            }],
+            "group_id": "5AEE0B71A81D3889E610D3273453F4D3",
+            "group_openid": "5AEE0B71A81D3889E610D3273453F4D3",
+            "message_scene": {
+                "source": "default",
+                "ext": [
+                    "msg_idx=REFIDX_pIUDcCxPHNmnX1pvgJLxRstG81ovPjw88HwjHppK6Gc=",
+                    "auth_token=RUqHU4mI4rmFk8FEn0RQKveD8OHmG3bIxnNuMToC87sEoVvSZwjbBcR43OrkCLMsd7RlftI8oFDtrF6eB_gV5mD_nzRkEee8fIRacfpnf7Rt2pTN8jICKZyYdSs-4Wg"
+                ]
+            },
+            "message_type": 0
+        },
+        "t": "GROUP_MESSAGE_CREATE"
+    });
+
+    let message: GroupMessage = serde_json::from_value(input["d"].clone()).unwrap();
+    let mentions = message.mentions.as_ref().unwrap();
+
+    assert_eq!(mentions.len(), 2);
+    assert!(mentions
+        .iter()
+        .all(|mention| matches!(mention, GroupMention::Single(_))));
+
+    let serialized = serde_json::to_value(&message).unwrap();
+
+    assert_eq!(
+        serialized["mentions"][0]["id"],
+        json!("D67BAF0591F086CEBF21403C3404BCAA")
+    );
+    assert_eq!(serialized["mentions"][0]["username"], json!("爱丽丝"));
+    assert_eq!(serialized["mentions"][0]["bot"], json!(true));
+    assert_eq!(serialized["mentions"][0]["scope"], json!("single"));
+    assert_eq!(serialized["mentions"][0]["is_you"], json!(true));
+    assert_eq!(serialized["mentions"][0]["member_role"], json!("member"));
+    assert_eq!(serialized["mentions"][1]["username"], json!("✪sheip9"));
+    assert_eq!(serialized["mentions"][1]["scope"], json!("single"));
+    assert_eq!(serialized["mentions"][1]["is_you"], json!(false));
+    assert_eq!(serialized["mentions"][1]["member_role"], json!("owner"));
+    assert_eq!(
+        serialized["message_scene"]["ext"],
+        input["d"]["message_scene"]["ext"]
+    );
+}
+
+#[test]
+fn serializes_and_deserializes_group_message_without_mentions() {
+    let input = json!({
+        "op": 0,
+        "id": "GROUP_MESSAGE_CREATE:2eys9hem80qmfgws0txqdx32ldikzcio259rdfmu2vxqkgxwpynhysl6q6ws849",
+        "d": {
+            "id": "ROBOT1.0_2eys9HEM80qMFgWs0Tx.QE1NoLCpefXetGGzsNccJ2Od6d8VU.Yqkr.6s2WdDOCbzUFmmVoNnv508NkV-gyyryIHEKTEZVh6Pp0CbJjRxhw!",
+            "content": " ",
+            "timestamp": "2026-08-12T10:08:52+08:00",
+            "author": {
+                "id": "8612C390E5716C0608A7A4E526C1EA45",
+                "username": "✪sheip9",
+                "bot": false,
+                "member_openid": "8612C390E5716C0608A7A4E526C1EA45",
+                "member_role": "owner",
+                "union_openid": ""
+            },
+            "group_id": "5AEE0B71A81D3889E610D3273453F4D3",
+            "group_openid": "5AEE0B71A81D3889E610D3273453F4D3",
+            "message_scene": {
+                "source": "default",
+                "ext": [
+                    "msg_idx=REFIDX_61b92/z0j2u9swxM/4p3PstG81ovPjw88HwjHppK6Gc=",
+                    "auth_token=xr9dDc-s5nUDPWUjxJGTk_3dS_uaKez3YlAG3cVOjfcmlMq3qPuhQ6oX9fklQSyrNCjruieVNQUry7cUqDXuDJSohX2Ip2Ywdh9PIA30Q5SwXqaL2O8K2r9aMTwdaFc"
+                ]
+            },
+            "message_type": 0
+        },
+        "t": "GROUP_MESSAGE_CREATE"
+    });
+
+    let message: GroupMessage = serde_json::from_value(input["d"].clone()).unwrap();
+
+    assert_eq!(
+        message.id,
+        "ROBOT1.0_2eys9HEM80qMFgWs0Tx.QE1NoLCpefXetGGzsNccJ2Od6d8VU.Yqkr.6s2WdDOCbzUFmmVoNnv508NkV-gyyryIHEKTEZVh6Pp0CbJjRxhw!"
+    );
+    assert_eq!(message.content.as_deref(), Some(" "));
+    assert_eq!(
+        message.timestamp.as_deref(),
+        Some("2026-08-12T10:08:52+08:00")
+    );
+    assert_eq!(message.group_openid, "5AEE0B71A81D3889E610D3273453F4D3");
+    assert_eq!(message.message_type, 0);
+    assert!(message.mentions.is_none());
+
+    let serialized = serde_json::to_value(&message).unwrap();
+
+    assert_eq!(serialized["content"], json!(" "));
+    assert_eq!(serialized["mentions"], serde_json::Value::Null);
+    assert_eq!(
+        serialized["message_scene"]["ext"],
+        input["d"]["message_scene"]["ext"]
     );
 }

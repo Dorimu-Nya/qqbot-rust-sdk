@@ -1,5 +1,5 @@
 use super::super::common::MessageAttachment;
-use crate::events::common::{ARKData, GroupUser, MessageScene, MsgElement, User};
+use crate::events::common::{ARKData, GroupUser, MessageScene, MsgElement};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -28,7 +28,7 @@ pub struct GroupMessage {
     /// 富媒体文件附件，文件类型："图片，语音，视频，文件"
     pub attachments: Option<Vec<MessageAttachment>>,
     /// 消息中@的用户列表
-    pub mentions: Option<Vec<User>>,
+    pub mentions: Option<Vec<GroupMention>>,
     /// 结构化卡片消息数据
     pub ark_data: Option<ARKData>,
     /// 消息元素列表
@@ -38,13 +38,13 @@ pub struct GroupMessage {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum MentionScopeSingle {
-    Single
+    Single,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum MentionScopeAll {
-    All
+    All,
 }
 /// 被 @ 时的数据结构
 #[derive(Debug, Clone, Serialize, Deserialize)]
