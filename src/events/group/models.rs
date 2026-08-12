@@ -36,6 +36,44 @@ pub struct GroupMessage {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MentionScopeSingle {
+    Single
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MentionScopeAll {
+    All
+}
+/// 被 @ 时的数据结构
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GroupMention {
+    Single(GroupMentionUser),
+    All(GroupMentionAll),
+}
+
+/// @单个用户时的结构体
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GroupMentionUser {
+    /// 通用用户信息
+    #[serde(flatten)]
+    pub user: GroupUser,
+    scope: MentionScopeSingle,
+    is_you: bool,
+}
+
+/// @全体成员 时的结构体
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GroupMentionAll {
+    username: String,
+    scope: MentionScopeAll,
+    is_you: bool,
+}
+// 吐槽一下上面这些文档里没有
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 /// 机器人加入群聊
 ///
 /// 参考: <https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_add_robot.html>
