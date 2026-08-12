@@ -852,7 +852,7 @@ dependencies = [
 
 [[package]]
 name = "qqbot-rust-sdk"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "async-trait",
  "ed25519-dalek",
