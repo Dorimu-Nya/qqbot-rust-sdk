@@ -9,6 +9,7 @@ use qqbot_rust_sdk::events::interaction::models::Interaction;
 fn converts_unit_and_empty_tuple_variants_to_kinds() {
     let group = GroupEvent::SubscribeMessageStatus;
     assert_eq!(group.to_kind(), GroupEventKind::SubscribeMessageStatus);
+    assert!(group.data().downcast_ref::<()>().is_some());
     assert_eq!(
         GroupEventKind::from(group),
         GroupEventKind::SubscribeMessageStatus
@@ -16,6 +17,7 @@ fn converts_unit_and_empty_tuple_variants_to_kinds() {
 
     let guild = GuildEvent::PublicMessageDelete();
     assert_eq!(guild.to_kind(), GuildEventKind::PublicMessageDelete);
+    assert!(guild.data().downcast_ref::<()>().is_some());
     assert_eq!(
         GuildEventKind::from(guild),
         GuildEventKind::PublicMessageDelete
@@ -38,6 +40,9 @@ fn converts_payload_variants_to_kinds() {
         data: None,
         version: None,
     });
+
+    let data = event.data().downcast_ref::<Interaction>().unwrap();
+    assert_eq!(data.id, "interaction-id");
 
     assert_eq!(
         InteractionEventKind::from(&event),
