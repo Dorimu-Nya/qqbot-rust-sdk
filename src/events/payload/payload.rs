@@ -1,8 +1,10 @@
-use std::collections::HashMap;
 use super::event::Event;
-use super::opcode::{DispatchOp, HeartbeatACK, Hello, HttpCallbackAckOp, Identify, Resume, WebhookAddressVerifyOp};
+use super::opcode::{
+    DispatchOp, HeartbeatACK, Hello, HttpCallbackAckOp, Identify, Resume, WebhookAddressVerifyOp,
+};
 use crate::events::validation::ValidationRequest;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -47,7 +49,7 @@ pub struct IdentifyData {
     pub token: String,
     pub indents: u64,
     pub shard: (u8, u8),
-    pub properties: Option<HashMap<String, String>>
+    pub properties: Option<HashMap<String, String>>,
 }
 
 /// opcode为6时，websocket 恢复所发送的包
