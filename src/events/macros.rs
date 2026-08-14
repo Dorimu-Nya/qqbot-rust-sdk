@@ -1,7 +1,8 @@
-// `event_kind!` 从一份事件枚举声明同时生成：
+// `event_kind!` 负责解析一份事件枚举声明，再把解析结果交给专用生成宏：
 // 1. 原事件枚举（如 `GuildEvent`）；
-// 2. 不携带数据的类型枚举（如 `GuildEventKind`）；
-// 3. 两者之间的转换，以及读取事件数据的方法。
+// 2. `event_kind_output!` 生成不携带数据的 Kind 及其转换；
+// 3. `event_spec_output!` 生成每个变体的强类型标记及 `EventSpec`；
+// 4. 主宏自身生成原枚举和读取事件数据的方法。
 //
 // 宏内部使用 “TT muncher（逐项吞 token）” 模式：每次解析一个变体，
 // 把生成结果存入几个累加器，再递归处理剩余变体。
@@ -23,6 +24,70 @@
 // - `$kind_variant_output`：累积生成的无载荷 Kind 枚举变体代码；
 // - `$kind_match_arm_output`：累积生成的 `Event -> EventKind` 匹配臂；
 // - `$data_match_arm_output`：累积生成的 `data()` 取载荷匹配臂。
+// - `$event_spec_input`：累积传给 EventSpec 生成宏的“标记名 + 载荷类型”；
+macro_rules! event_kind_output {
+    (
+        [$visibility:vis]
+        [$event_name:ident]
+        [$($kind_variant_output:tt)*]
+        [$($kind_match_arm_output:tt)*]
+    ) => {
+        ::paste::paste! {
+            /// 与事件类型列表对应、但不携带事件载荷的枚举。
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::EnumIter)]
+            $visibility enum [<$event_name Kind>] {
+                $($kind_variant_output)*
+            }
+
+            impl $event_name {
+                /// 返回当前事件对应的不携带数据的 Kind。
+                pub fn to_kind(&self) -> [<$event_name Kind>] {
+                    self.into()
+                }
+            }
+
+            impl From<&$event_name> for [<$event_name Kind>] {
+                fn from(event: &$event_name) -> Self {
+                    match event {
+                        $($kind_match_arm_output)*
+                    }
+                }
+            }
+
+            impl From<$event_name> for [<$event_name Kind>] {
+                fn from(event: $event_name) -> Self {
+                    Self::from(&event)
+                }
+            }
+        }
+    };
+}
+
+macro_rules! event_spec_output {
+    (
+        [$visibility:vis]
+        [$event_name:ident]
+        [$(($marker_name:ident, $payload_type:ty);)*]
+    ) => {
+        ::paste::paste! {
+            #[doc = concat!("`", stringify!($event_name), "` 的强类型事件标记。")]
+            $visibility mod [<$event_name:snake _markers>] {
+                use super::*;
+
+                $(
+                    #[doc = concat!("`", stringify!($marker_name), "` 事件的类型标记。")]
+                    #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+                    pub struct $marker_name;
+
+                    impl $crate::events::EventSpec for $marker_name {
+                        type Payload = $payload_type;
+                    }
+                )*
+            }
+        }
+    };
+}
+
 macro_rules! event_kind {
     // ===== 对外入口 =====
     // 接收形如 `pub enum Event { A, B(Data) }` 的枚举声明。
@@ -47,8 +112,10 @@ macro_rules! event_kind {
             [$(#[$enum_attributes])*]
             [$visibility]
             [$event_name]
-            // 以下四个空 `[]` 是四个待填充的累加器。
-            // 顺序：原枚举变体、Kind 变体、to_kind 匹配臂、data 匹配臂。
+            // 以下五个空 `[]` 是五个待填充的累加器。
+            // 顺序：原枚举变体、Kind 变体、to_kind 匹配臂、data 匹配臂、
+            // EventSpec 生成所需的“标记名 + 载荷类型”。
+            []
             []
             []
             []
@@ -71,7 +138,7 @@ macro_rules! event_kind {
     // ===== 解析空元组变体：`Variant()` =====
     // 它没有载荷，但需要保留括号形式，匹配时也写成 `Variant()`。
     (@parse
-        // 前七组 `[]` 是上一轮传入的固定信息和四个累加器。
+        // 前八组 `[]` 是上一轮传入的固定信息和五个累加器。
         [$($enum_attributes:tt)*]
         [$visibility:vis]
         [$event_name:ident]
@@ -79,6 +146,7 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
         // `$variant_attributes` 是当前变体自己的属性；`$variant_name` 是当前变体名。
         $(#[$variant_attributes:meta])*
         $variant_name:ident (),
@@ -97,6 +165,7 @@ macro_rules! event_kind {
             [$($kind_match_arm_output)* $event_name::$variant_name() => Self::$variant_name,]
             // 空变体没有数据，用 `&()` 统一表示“无载荷”。
             [$($data_match_arm_output)* $event_name::$variant_name() => &(),]
+            [$($event_spec_input)* ($variant_name, ());]
             // 再次调用整个宏：编译器会从头检查各个 `@parse` 分支，
             // 根据 `$remaining_variants` 开头的形状选择空元组、单字段或单元变体规则。
             // 若它已为空，所有要求存在当前变体的分支都会匹配失败，最终命中递归终点。
@@ -115,6 +184,7 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
         // 当前变体：`$variant_name` 是名字，`$payload_type` 是括号中的载荷类型。
         $(#[$variant_attributes:meta])*
         $variant_name:ident ($payload_type:ty),
@@ -132,7 +202,8 @@ macro_rules! event_kind {
             [$($kind_match_arm_output)* $event_name::$variant_name(..) => Self::$variant_name,]
             // `self` 是引用，match 的默认绑定模式会让 `data` 也是载荷引用。
             [$($data_match_arm_output)* $event_name::$variant_name(data) => data,]
-            // 带着更新后的四个累加器，再次从 `$remaining_variants` 的第一个变体开始匹配。
+            [$($event_spec_input)* ($variant_name, $payload_type);]
+            // 带着更新后的五个累加器，再次从 `$remaining_variants` 的第一个变体开始匹配。
             $($remaining_variants)*
         }
     };
@@ -147,6 +218,7 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
         $(#[$variant_attributes:meta])*
         // `$first_payload_type` 匹配第一个类型，`$remaining_payload_types` 匹配至少一个后续类型；
         // 这样可确定当前变体确实携带两个或更多字段。
@@ -167,6 +239,7 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
         $(#[$variant_attributes:meta])*
         // `$named_fields` 整体接住 `{ ... }` 中的 token；这里只需识别形状，无须解析字段细节。
         $variant_name:ident { $($named_fields:tt)* },
@@ -179,7 +252,7 @@ macro_rules! event_kind {
     // ===== 解析单元变体：`Variant` =====
     // 与 `Variant()` 一样没有载荷，但 Rust 的声明和匹配语法都不带括号。
     (@parse
-        // 固定信息与四个累加器来自上一轮 `@parse` 调用。
+        // 固定信息与五个累加器来自上一轮 `@parse` 调用。
         [$($enum_attributes:tt)*]
         [$visibility:vis]
         [$event_name:ident]
@@ -187,6 +260,7 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
         // 当前变体只有属性和名字，没有 `()`、载荷类型或 `{}` 字段。
         $(#[$variant_attributes:meta])*
         $variant_name:ident,
@@ -203,13 +277,14 @@ macro_rules! event_kind {
             [$($kind_match_arm_output)* $event_name::$variant_name => Self::$variant_name,]
             // 无载荷仍返回 `&()`，让 `data()` 对所有变体拥有统一返回类型。
             [$($data_match_arm_output)* $event_name::$variant_name => &(),]
+            [$($event_spec_input)* ($variant_name, ());]
             // 更新累加器后递归：有剩余变体就继续分类解析，否则进入终点生成代码。
             $($remaining_variants)*
         }
     };
 
-    // ===== 递归终点：所有变体处理完毕后生成最终代码 =====
-    // 当末尾已没有待解析的变体时，四个累加器就是完整的生成材料。
+    // ===== 递归终点：所有变体处理完毕后分派给各生成宏 =====
+    // 当末尾已没有待解析的变体时，五个累加器就是完整的生成材料。
     // 注意本规则没有 `$remaining_variants`：只有上一轮传来的待处理 token 已清空时才会命中。
     // 此时前面那些要求匹配 `$variant_name` 的分支均无法命中，编译器才会匹配到本规则。
     // 虽然它写在最后，但 `macro_rules!` 的递归调用仍然可以命中后方规则。
@@ -223,65 +298,40 @@ macro_rules! event_kind {
         [$($kind_variant_output:tt)*]
         [$($kind_match_arm_output:tt)*]
         [$($data_match_arm_output:tt)*]
+        [$($event_spec_input:tt)*]
     ) => {
-        // `paste!` 能把标识符拼接起来，例如 `GuildEvent` + `Kind`
-        // 生成新的类型名 `GuildEventKind`。
-        ::paste::paste! {
-            // 原样恢复调用者写下的属性、可见性、枚举名和所有变体。
-            $($enum_attributes)*
-            $visibility enum $event_name {
-                // 来源：每轮解析后追加到 `$event_variant_output` 的原始变体。
-                $($event_variant_output)*
-            }
+        // 主宏只恢复事件本体和依赖 data 匹配臂的方法。
+        $($enum_attributes)*
+        $visibility enum $event_name {
+            $($event_variant_output)*
+        }
 
-            /// 与事件类型列表对应、但不携带事件载荷的枚举。
-            // Kind 只表示“发生了哪类事件”，因此可以实现 Copy 和 EnumIter。
-            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::EnumIter)]
-            $visibility enum [<$event_name Kind>] {
-                // 来源：每轮只保留变体名并追加到 `$kind_variant_output`。
-                $($kind_variant_output)*
-            }
-
-            impl $event_name {
-                /// 返回当前事件对应的不携带数据的 Kind。
-                pub fn to_kind(&self) -> [<$event_name Kind>] {
-                    // 复用下面的 `From<&Event>`，避免再写一遍 match。
-                    self.into()
-                }
-
-                /// 返回当前事件变体携带的数据。
-                ///
-                /// 不携带数据的事件返回 `()`。
-                pub fn data(&self) -> &(dyn ::std::any::Any + Send + Sync) {
-                    // 所有具体载荷都擦除为 `Any`，调用方可用 `downcast_ref` 取回原类型。
-                    // 返回引用而不是值，可避免移动或克隆事件中的数据。
-                    match self {
-                        // 来源：各变体解析规则生成的“取载荷”匹配臂。
-                        $($data_match_arm_output)*
-                    }
+        impl $event_name {
+            /// 返回当前事件变体携带的数据。
+            ///
+            /// 不携带数据的事件返回 `()`。
+            pub fn data(&self) -> &(dyn ::std::any::Any + Send + Sync) {
+                match self {
+                    $($data_match_arm_output)*
                 }
             }
+        }
 
-            // 借用转换：只查看变体，不消费原事件。
-            impl From<&$event_name> for [<$event_name Kind>] {
-                fn from(event: &$event_name) -> Self {
-                    match event {
-                        // 来源：各变体解析规则生成的“转 Kind”匹配臂。
-                        $($kind_match_arm_output)*
-                    }
-                }
-            }
+        // 两个专用宏只接收各自生成代码所必需的解析结果。
+        $crate::events::macros::event_kind_output! {
+            [$visibility]
+            [$event_name]
+            [$($kind_variant_output)*]
+            [$($kind_match_arm_output)*]
+        }
 
-            // 所有权转换：虽然接收事件值，但仍委托给借用版本来复用逻辑。
-            impl From<$event_name> for [<$event_name Kind>] {
-                fn from(event: $event_name) -> Self {
-                    Self::from(&event)
-                }
-            }
-
+        $crate::events::macros::event_spec_output! {
+            [$visibility]
+            [$event_name]
+            [$($event_spec_input)*]
         }
     };
 }
 
 // 将宏限制为 crate 内可见，供各事件模块通过普通路径导入使用。
-pub(crate) use event_kind;
+pub(crate) use {event_kind, event_kind_output, event_spec_output};
