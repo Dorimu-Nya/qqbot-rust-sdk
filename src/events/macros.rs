@@ -2,7 +2,7 @@
 // 1. 原事件枚举（如 `GuildEvent`）；
 // 2. `event_kind_output!` 生成不携带数据的 Kind 及其转换；
 // 3. `event_spec_output!` 生成每个变体的强类型标记及 `EventSpec`；
-// 4. 主宏自身生成原枚举和读取事件数据的方法。
+// 4. `event_data_output!` 生成读取事件数据的 `data()` 方法。
 //
 // 宏内部使用 “TT muncher（逐项吞 token）” 模式：每次解析一个变体，
 // 把生成结果存入几个累加器，再递归处理剩余变体。
@@ -25,11 +25,26 @@
 // - `$kind_match_arm_output`：累积生成的 `Event -> EventKind` 匹配臂；
 // - `$data_match_arm_output`：累积生成的 `data()` 取载荷匹配臂。
 // - `$event_spec_input`：累积传给 EventSpec 生成宏的“标记名 + 载荷类型”；
+
+// ===== Kind 生成宏 =====
+// 仅负责生成与 Kind 有关的代码，不解析原始事件枚举。
+//
+// 主宏在完成所有变体的解析后调用它，并传入：
+// - 原事件枚举的可见性和名称；
+// - 去除载荷后的 Kind 变体列表；
+// - 从 `Event` 转换为 `EventKind` 所需的 match 分支。
+//
+// 最终生成 `XxxEventKind`、`Event::to_kind()`，以及拥有所有权和借用形式的
+// `From<Event>` / `From<&Event>` 实现。
 macro_rules! event_kind_output {
     (
+        // Kind 与原事件枚举保持相同可见性。
         [$visibility:vis]
+        // 用于通过 `paste!` 拼出 `<EventName>Kind`。
         [$event_name:ident]
+        // 已归一化为不带载荷的变体，如 `Created, Deleted,`。
         [$($kind_variant_output:tt)*]
+        // 已生成的转换分支，如 `Event::Created(..) => Self::Created,`。
         [$($kind_match_arm_output:tt)*]
     ) => {
         ::paste::paste! {
@@ -63,10 +78,22 @@ macro_rules! event_kind_output {
     };
 }
 
+// ===== EventSpec 生成宏 =====
+// 仅负责生成强类型事件标记及其载荷绑定，不解析枚举变体，也不生成事件本体。
+//
+// 主宏把每个事件变体归一化成 `(标记名, 载荷类型);`：
+// - 有载荷变体 `Created(Data)` 变为 `(Created, Data);`；
+// - 单元变体 `Ready` 和空元组变体 `Ready()` 均变为 `(Ready, ());`。
+//
+// 最终生成 `<event_name>_markers` 模块、零大小 marker 类型，以及对应的
+// `EventSpec<Payload = ...>` 关联类型绑定。
 macro_rules! event_spec_output {
     (
+        // marker 模块与原事件枚举保持相同可见性。
         [$visibility:vis]
+        // 用于通过 `paste!` 拼出 `<event_name>_markers` 模块名。
         [$event_name:ident]
+        // 每项都包含 marker 类型名及其对应的事件载荷类型。
         [$(($marker_name:ident, $payload_type:ty);)*]
     ) => {
         ::paste::paste! {
@@ -88,6 +115,36 @@ macro_rules! event_spec_output {
     };
 }
 
+// ===== data() 生成宏 =====
+// 仅负责为原事件枚举生成 `data()` 方法，不解析变体，也不关心 Kind 和 EventSpec。
+//
+// 主宏传入事件枚举名称，以及每个变体对应的载荷引用匹配臂。无载荷变体的匹配臂
+// 返回 `&()`，有载荷变体则直接返回其载荷引用；最终统一擦除为
+// `&(dyn Any + Send + Sync)`。
+macro_rules! event_data_output {
+    (
+        // 需要添加 `data()` 方法的原事件枚举名称。
+        [$event_name:ident]
+        // 已生成的匹配分支，如 `Event::Created(data) => data,`。
+        [$($data_match_arm_output:tt)*]
+    ) => {
+        impl $event_name {
+            /// 返回当前事件变体携带的数据。
+            ///
+            /// 不携带数据的事件返回 `()`。
+            pub fn data(&self) -> &(dyn ::std::any::Any + Send + Sync) {
+                match self {
+                    $($data_match_arm_output)*
+                }
+            }
+        }
+    };
+}
+
+// ===== 主解析宏 =====
+// 对外保持类似普通枚举声明的调用形式。它只解析一次原始变体，并在递归过程中
+// 同时累积事件本体、data()、Kind 和 EventSpec 所需的不同输出材料；解析完成后，
+// data()、Kind 与 EventSpec 部分分别委托给上面的专用宏生成。
 macro_rules! event_kind {
     // ===== 对外入口 =====
     // 接收形如 `pub enum Event { A, B(Data) }` 的枚举声明。
@@ -300,24 +357,18 @@ macro_rules! event_kind {
         [$($data_match_arm_output:tt)*]
         [$($event_spec_input:tt)*]
     ) => {
-        // 主宏只恢复事件本体和依赖 data 匹配臂的方法。
+        // 主宏只恢复原事件枚举本体。
         $($enum_attributes)*
         $visibility enum $event_name {
             $($event_variant_output)*
         }
 
-        impl $event_name {
-            /// 返回当前事件变体携带的数据。
-            ///
-            /// 不携带数据的事件返回 `()`。
-            pub fn data(&self) -> &(dyn ::std::any::Any + Send + Sync) {
-                match self {
-                    $($data_match_arm_output)*
-                }
-            }
+        // 三个专用宏只接收各自生成代码所必需的解析结果。
+        $crate::events::macros::event_data_output! {
+            [$event_name]
+            [$($data_match_arm_output)*]
         }
 
-        // 两个专用宏只接收各自生成代码所必需的解析结果。
         $crate::events::macros::event_kind_output! {
             [$visibility]
             [$event_name]
@@ -334,4 +385,4 @@ macro_rules! event_kind {
 }
 
 // 将宏限制为 crate 内可见，供各事件模块通过普通路径导入使用。
-pub(crate) use {event_kind, event_kind_output, event_spec_output};
+pub(crate) use {event_data_output, event_kind, event_kind_output, event_spec_output};
