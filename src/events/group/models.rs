@@ -83,7 +83,7 @@ pub struct GroupAddRobotEvent {
     /// 群 openid
     pub group_openid: String,
     /// 操作成员 openid
-    pub op_member_openid: String,
+    pub member_openid: String, // 这个字段实际接收到的和文档不一致
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
