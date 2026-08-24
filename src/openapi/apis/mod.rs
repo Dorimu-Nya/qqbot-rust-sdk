@@ -9,6 +9,8 @@ pub(super) use super::utils::{append_query, render_path, require_path};
 mod channel;
 mod guild;
 mod interaction;
+#[path = "menu-panel/mod.rs"]
+mod menu_panel;
 mod message;
 mod open_api;
 mod user;
@@ -21,6 +23,7 @@ pub use guild::{
     AnnouncesApi, ApiPermissionsApi, GuildsApi, MembersApi, MessageSettingsApi, MuteApi, RolesApi,
 };
 pub use interaction::InteractionsApi;
+pub use menu_panel::MenuApi;
 pub use message::{C2cMessagesApi, DmsMessagesApi, GroupMessagesApi, MediaApi};
 pub use open_api::OpenApi;
 pub use user::UsersApi;

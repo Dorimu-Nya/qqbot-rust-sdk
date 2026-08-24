@@ -2,6 +2,7 @@ mod channel;
 mod common;
 mod guild;
 mod interaction;
+mod menu;
 pub mod message;
 mod user;
 
@@ -21,6 +22,12 @@ pub use guild::{
     RoleMembersResponse, UpdateRoleRequest, UpdateRoleResponse,
 };
 pub use interaction::{InteractionAckCode, InteractionAckRequest};
+pub use menu::{
+    CreatePanelRequest, CreatePanelResponse, Menu, MenuItem, MenuPutRequest, MenuPutResponse,
+    MenuResponse, Panel, PanelDetailResponse, PanelItem, PanelListQuery, PanelRecord, PanelsQuery,
+    PanelsResponse, SubMenuItem, Switch, UpdatePanelRequest, UpdatePanelResponse,
+    UpdatePanelTargetRequest,
+};
 pub use message::{
     AudioControlRequest, CreateDmsRequest, DeleteMessageOptions, Dms, GroupMember,
     GroupMembersQuery, GroupMembersResponse, JsonObject, Message, MessageAttachment,

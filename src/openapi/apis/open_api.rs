@@ -1,7 +1,7 @@
 use super::{
     AnnouncesApi, ApiPermissionsApi, AudioApi, C2cMessagesApi, ChannelMessagesApi,
     ChannelPermissionsApi, ChannelsApi, DmsMessagesApi, ForumsApi, GroupMessagesApi, GuildsApi,
-    InteractionsApi, MediaApi, MembersApi, MessageSettingsApi, MuteApi, OpenApiClient,
+    InteractionsApi, MediaApi, MembersApi, MenuApi, MessageSettingsApi, MuteApi, OpenApiClient,
     OpenApiPaths, PinsApi, ReactionsApi, RolesApi, SchedulesApi, TokenProvider, UsersApi,
 };
 
@@ -186,6 +186,14 @@ where
     /// 获取当前用户、频道列表和私信创建相关 API。
     pub fn users(&self) -> UsersApi<P> {
         UsersApi {
+            client: self.client.clone(),
+            paths: self.paths.clone(),
+        }
+    }
+
+    /// 获取菜单面板相关 API。
+    pub fn menu(&self) -> MenuApi<P> {
+        MenuApi {
             client: self.client.clone(),
             paths: self.paths.clone(),
         }

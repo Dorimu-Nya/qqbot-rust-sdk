@@ -191,6 +191,22 @@ pub struct OpenApiPaths {
     pub user_me: Option<String>,
     /// 获取当前用户频道列表的路径模板。
     pub user_guilds: Option<String>,
+    /// 获取当前菜单的路径模板。
+    pub menu_get: Option<String>,
+    /// 修改当前菜单的路径模板。
+    pub menu_put: Option<String>,
+    /// 获取指令面板列表的路径模板。
+    pub panels_get: Option<String>,
+    /// 创建指令面板的路径模板。
+    pub panels_create: Option<String>,
+    /// 获取指定指令面板详情的路径模板。
+    pub panels_panel_id_get: Option<String>,
+    /// 修改指定指令面板的路径模板。
+    pub panels_panel_id_put: Option<String>,
+    /// 删除指定指令面板的路径模板。
+    pub panels_panel_id_delete: Option<String>,
+    /// 修改指定指令面板关联对象的路径模板。
+    pub panels_panel_id_target_put: Option<String>,
 }
 
 impl OpenApiPaths {
@@ -288,6 +304,14 @@ impl OpenApiPaths {
             message_setting_get: Some("/guilds/{guild_id}/message/setting".to_string()),
             user_me: Some("/users/@me".to_string()),
             user_guilds: Some("/users/@me/guilds".to_string()),
+            menu_get: Some("/v2/menu".to_string()),
+            menu_put: Some("/v2/menu".to_string()),
+            panels_get: Some("/v2/panels".to_string()),
+            panels_create: Some("/v2/panels".to_string()),
+            panels_panel_id_get: Some("/v2/panels/{panel_id}".to_string()),
+            panels_panel_id_put: Some("/v2/panels/{panel_id}".to_string()),
+            panels_panel_id_delete: Some("/v2/panels/{panel_id}".to_string()),
+            panels_panel_id_target_put: Some("/v2/panels/{panel_id}/target".to_string()),
         }
     }
 }
