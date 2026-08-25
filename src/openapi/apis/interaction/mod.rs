@@ -1,7 +1,18 @@
-pub(super) use super::{
-    render_path, require_path, Method, OpenApiClient, OpenApiPaths, Result, TokenProvider,
-};
+use std::sync::Arc;
 
-mod interactions;
+use super::super::api::QQApiClient;
+use super::super::api_request::ApiRequest;
 
-pub use interactions::InteractionsApi;
+pub mod put_interaction;
+
+pub struct InteractionApis {
+    pub(crate) request: Arc<dyn ApiRequest>,
+}
+
+impl QQApiClient {
+    pub fn interaction(&self) -> InteractionApis {
+        InteractionApis {
+            request: Arc::clone(&self.request),
+        }
+    }
+}

@@ -1,20 +1,25 @@
-pub(super) use super::{
-    append_query, render_path, require_path, Method, OpenApiClient, OpenApiPaths, Result,
-    TokenProvider,
-};
+use std::sync::Arc;
 
-mod announces;
-mod api_permissions;
-mod guilds;
-mod members;
-mod message_settings;
-mod mute;
-mod roles;
+use super::super::api::QQApiClient;
+use super::super::api_request::ApiRequest;
 
-pub use announces::AnnouncesApi;
-pub use api_permissions::ApiPermissionsApi;
-pub use guilds::GuildsApi;
-pub use members::MembersApi;
-pub use message_settings::MessageSettingsApi;
-pub use mute::MuteApi;
-pub use roles::RolesApi;
+pub mod announces;
+pub mod channel;
+pub mod guild;
+pub mod members;
+pub mod mute;
+pub mod permissions;
+pub mod roles;
+pub mod settings;
+
+pub struct GuildApis {
+    pub(crate) request: Arc<dyn ApiRequest>,
+}
+
+impl QQApiClient {
+    pub fn guild(&self) -> GuildApis {
+        GuildApis {
+            request: Arc::clone(&self.request),
+        }
+    }
+}

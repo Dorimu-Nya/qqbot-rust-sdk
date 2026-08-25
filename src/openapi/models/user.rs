@@ -1,15 +1,19 @@
 use serde::{Deserialize, Serialize};
 
-/// GET /users/@me/guilds 请求参数。
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct UserGuildsQuery {
-    /// 读此 guild id 之前的数据。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct User {
+    pub id: String,
+    pub username: String,
     #[serde(default)]
-    pub before: Option<String>,
-    /// 读此 guild id 之后的数据。
+    pub avatar: Option<String>,
     #[serde(default)]
-    pub after: Option<String>,
-    /// 每次拉取多少条数据，默认 100, 最大 100。
+    pub bot: Option<bool>,
     #[serde(default)]
-    pub limit: Option<u32>,
+    pub union_openid: Option<String>,
+    #[serde(default)]
+    pub union_user_account: Option<String>,
+    #[serde(default)]
+    pub public_flags: Option<u64>,
+    #[serde(default)]
+    pub system: Option<bool>,
 }

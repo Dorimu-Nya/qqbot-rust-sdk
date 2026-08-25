@@ -1,8 +1,20 @@
-pub(super) use super::{
-    append_query, render_path, require_path, Method, OpenApiClient, OpenApiPaths, Result,
-    TokenProvider,
-};
+use std::sync::Arc;
 
-mod users;
+use super::super::api::QQApiClient;
+use super::super::api_request::ApiRequest;
 
-pub use users::UsersApi;
+pub mod create_direct_message;
+mod me;
+pub mod me_guilds;
+
+pub struct UserApis {
+    pub(crate) request: Arc<dyn ApiRequest>,
+}
+
+impl QQApiClient {
+    pub fn user(&self) -> UserApis {
+        UserApis {
+            request: Arc::clone(&self.request),
+        }
+    }
+}

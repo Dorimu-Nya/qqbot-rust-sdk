@@ -1,14 +1,22 @@
-pub(super) use super::{
-    append_query, render_path, require_path, Method, OpenApiClient, OpenApiPaths, Result,
-    TokenProvider,
-};
+use std::sync::Arc;
 
-mod c2c_messages;
-mod dms_messages;
-mod group_messages;
-mod media;
+use super::super::api::QQApiClient;
+use super::super::api_request::ApiRequest;
 
-pub use c2c_messages::C2cMessagesApi;
-pub use dms_messages::DmsMessagesApi;
-pub use group_messages::GroupMessagesApi;
-pub use media::MediaApi;
+pub mod c2c;
+pub mod direct;
+pub mod group;
+pub mod media;
+pub mod models;
+
+pub struct MessageApis {
+    pub(crate) request: Arc<dyn ApiRequest>,
+}
+
+impl QQApiClient {
+    pub fn message(&self) -> MessageApis {
+        MessageApis {
+            request: Arc::clone(&self.request),
+        }
+    }
+}

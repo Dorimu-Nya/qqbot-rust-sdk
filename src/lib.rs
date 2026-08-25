@@ -16,7 +16,6 @@ pub mod events;
 /// 参考： <https://bot.q.qq.com/wiki/develop/api-v2/autogen/>
 pub mod openapi;
 
-mod openapi_refactor;
 #[cfg(feature = "signature")]
 /// 提供根据文档开发的签名校验逻辑。
 ///
