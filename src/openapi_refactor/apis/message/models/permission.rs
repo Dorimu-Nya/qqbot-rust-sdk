@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::PermissionType;
+use super::permission_type::PermissionType;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Permission {

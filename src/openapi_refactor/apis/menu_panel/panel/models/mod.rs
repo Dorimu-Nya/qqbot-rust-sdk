@@ -1,0 +1,10 @@
+pub mod create_panel_request;
+pub mod create_panel_response;
+pub mod panel;
+pub mod panel_detail_response;
+pub mod panel_item;
+pub mod panel_record;
+pub mod panels_response;
+pub mod update_panel_request;
+pub mod update_panel_response;
+pub mod update_panel_target_request;

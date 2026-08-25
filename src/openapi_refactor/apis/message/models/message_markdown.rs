@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use super::{Keyboard, MessageMarkdownParam};
+use super::keyboard::Keyboard;
+use super::message_markdown_param::MessageMarkdownParam;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageMarkdown {

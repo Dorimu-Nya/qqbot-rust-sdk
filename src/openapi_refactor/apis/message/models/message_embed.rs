@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use super::{MessageEmbedField, MessageEmbedThumbnail};
+use super::message_embed_field::MessageEmbedField;
+use super::message_embed_thumbnail::MessageEmbedThumbnail;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageEmbed {

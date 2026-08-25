@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::openapi_refactor::models::Member;
+use super::super::super::super::super::models::member::Member;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Schedule {

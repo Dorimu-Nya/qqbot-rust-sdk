@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::RoleMemberChannel;
+use super::role_member_channel::RoleMemberChannel;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoleMemberActionRequest {

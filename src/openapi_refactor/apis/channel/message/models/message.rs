@@ -3,9 +3,10 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::openapi_refactor::models::{Member, User};
-
-use super::{MessageAttachment, MessageReference};
+use super::super::super::super::super::models::member::Member;
+use super::super::super::super::super::models::user::User;
+use super::message_attachment::MessageAttachment;
+use super::message_reference::MessageReference;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Message {

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::PanelRecord;
+use super::panel_record::PanelRecord;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PanelsResponse {

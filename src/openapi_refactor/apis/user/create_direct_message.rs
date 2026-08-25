@@ -1,5 +1,10 @@
+use reqwest::Method;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
+
+use super::super::super::client::{ApiRequestError, ApiRequestExt};
+use super::super::super::models::err_resp::ErrResp;
+use super::UserApis;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateDirectMessageRequest {
@@ -19,8 +24,13 @@ pub struct CreateDirectMessageResponse {
     pub extra: Map<String, Value>,
 }
 
-pub async fn create_direct_message(
-    _body: CreateDirectMessageRequest,
-) -> CreateDirectMessageResponse {
-    todo!()
+impl UserApis {
+    pub async fn create_direct_message(
+        &self,
+        body: &CreateDirectMessageRequest,
+    ) -> Result<CreateDirectMessageResponse, ApiRequestError<ErrResp>> {
+        self.request
+            .request("users/@me/dms", Method::POST, None, Some(body))
+            .await
+    }
 }

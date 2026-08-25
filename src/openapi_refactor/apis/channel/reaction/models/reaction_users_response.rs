@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-use crate::openapi_refactor::models::User;
+use super::super::super::super::super::models::user::User;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ReactionUsersResponse {

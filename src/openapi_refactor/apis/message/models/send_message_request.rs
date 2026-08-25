@@ -1,8 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use super::{
-    JsonObject, Keyboard, MessageArk, MessageEmbed, MessageMarkdown, MessageMedia, MessageType,
-};
+use super::json_object::JsonObject;
+use super::keyboard::Keyboard;
+use super::message_ark::MessageArk;
+use super::message_embed::MessageEmbed;
+use super::message_markdown::MessageMarkdown;
+use super::message_media::MessageMedia;
+use super::message_type::MessageType;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendMessageRequest {

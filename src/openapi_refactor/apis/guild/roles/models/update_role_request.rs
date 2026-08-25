@@ -1,1 +1,1 @@
-pub type UpdateRoleRequest = super::CreateRoleRequest;
+pub type UpdateRoleRequest = super::create_role_request::CreateRoleRequest;

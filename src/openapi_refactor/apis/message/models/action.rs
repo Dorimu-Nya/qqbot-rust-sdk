@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use super::{ActionAnchor, ActionType, Permission};
+use super::action_anchor::ActionAnchor;
+use super::action_type::ActionType;
+use super::permission::Permission;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Action {

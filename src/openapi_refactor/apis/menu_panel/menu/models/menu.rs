@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::MenuItem;
+use super::menu_item::MenuItem;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Menu {

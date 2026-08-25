@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::KeyboardRow;
+use super::keyboard_row::KeyboardRow;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KeyboardContent {

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::RecommendChannel;
+use super::recommend_channel::RecommendChannel;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CreateAnnouncesRequest {

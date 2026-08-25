@@ -1,4 +1,9 @@
+use reqwest::Method;
 use serde::{Deserialize, Serialize};
+
+use super::super::super::super::client::{ApiRequestError, ApiRequestExt};
+use super::super::super::super::models::err_resp::ErrResp;
+use super::AudioApi;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PostAudioRequest {
@@ -10,6 +15,15 @@ pub struct PostAudioRequest {
     pub status: Option<i32>,
 }
 
-pub async fn post_audio(_channel_id: &str, _body: PostAudioRequest) {
-    todo!()
+impl AudioApi {
+    pub async fn post_audio(
+        &self,
+        channel_id: &str,
+        body: &PostAudioRequest,
+    ) -> Result<serde_json::Value, ApiRequestError<ErrResp>> {
+        let path = format!("channels/{channel_id}/audio");
+        self.request
+            .request(&path, Method::POST, None, Some(body))
+            .await
+    }
 }

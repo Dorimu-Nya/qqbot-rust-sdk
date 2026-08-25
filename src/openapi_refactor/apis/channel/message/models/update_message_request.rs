@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::openapi_refactor::models::{Keyboard, MessageMarkdown};
+use super::super::super::super::message::models::keyboard::Keyboard;
+use super::super::super::super::message::models::message_markdown::MessageMarkdown;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct UpdateMessageRequest {

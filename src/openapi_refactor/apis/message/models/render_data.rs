@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::ButtonStyle;
+use super::button_style::ButtonStyle;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RenderData {

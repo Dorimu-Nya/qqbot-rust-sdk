@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use super::{Action, RenderData};
+use super::action::Action;
+use super::render_data::RenderData;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KeyboardButton {

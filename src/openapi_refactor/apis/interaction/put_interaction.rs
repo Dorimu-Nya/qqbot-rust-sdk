@@ -1,5 +1,10 @@
+use reqwest::Method;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
+
+use super::super::super::client::{ApiRequestError, ApiRequestExt};
+use super::super::super::models::err_resp::ErrResp;
+use super::InteractionApis;
 
 #[derive(Debug, Clone, Copy, Serialize_repr, Deserialize_repr)]
 #[repr(i32)]
@@ -17,9 +22,16 @@ pub struct PutInteractionRequest {
     pub code: InteractionAckCode,
 }
 
-pub async fn put_interaction(
-    _interaction_id: &str,
-    _body: PutInteractionRequest,
-) {
-    todo!()
+impl InteractionApis {
+    pub async fn put_interaction(
+        &self,
+        interaction_id: &str,
+        body: &PutInteractionRequest,
+    ) -> Result<serde_json::Value, ApiRequestError<ErrResp>> {
+        let path = format!("interactions/{interaction_id}");
+
+        self.request
+            .request(&path, Method::PUT, None, Some(body))
+            .await
+    }
 }

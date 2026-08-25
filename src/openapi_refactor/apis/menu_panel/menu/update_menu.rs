@@ -1,5 +1,18 @@
-pub async fn update_menu(
-    _body: crate::openapi_refactor::apis::menu_panel::models::MenuPutRequest,
-) -> crate::openapi_refactor::apis::menu_panel::models::MenuPutResponse {
-    todo!()
+use reqwest::Method;
+
+use super::super::super::super::client::{ApiRequestError, ApiRequestExt};
+use super::super::super::super::models::err_resp::ErrResp;
+use super::models::menu_put_request::MenuPutRequest;
+use super::models::menu_put_response::MenuPutResponse;
+use super::MenuApi;
+
+impl MenuApi {
+    pub async fn update_menu(
+        &self,
+        body: &MenuPutRequest,
+    ) -> Result<MenuPutResponse, ApiRequestError<ErrResp>> {
+        self.request
+            .request("v2/menu", Method::PUT, None, Some(body))
+            .await
+    }
 }

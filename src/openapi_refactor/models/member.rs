@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::User;
+use super::user::User;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Member {

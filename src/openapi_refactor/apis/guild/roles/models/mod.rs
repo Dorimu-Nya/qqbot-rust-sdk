@@ -1,0 +1,9 @@
+pub mod create_role_request;
+pub mod create_role_response;
+pub mod guild_roles_response;
+pub mod role;
+pub mod role_member_action_request;
+pub mod role_member_channel;
+pub mod role_members_response;
+pub mod update_role_request;
+pub mod update_role_response;

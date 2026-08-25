@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::Thread;
+use super::thread::Thread;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ThreadDetailResponse {

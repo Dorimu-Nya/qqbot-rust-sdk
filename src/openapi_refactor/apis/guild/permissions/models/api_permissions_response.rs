@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::ApiPermission;
+use super::api_permission::ApiPermission;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiPermissionsResponse {

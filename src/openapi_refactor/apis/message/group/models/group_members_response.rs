@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-use super::GroupMember;
+use super::group_member::GroupMember;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct GroupMembersResponse {

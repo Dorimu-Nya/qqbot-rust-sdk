@@ -1,6 +1,20 @@
-pub async fn patch_channel(
-    _channel_id: &str,
-    _body: crate::openapi_refactor::apis::channel::models::UpdateChannelRequest,
-) -> crate::openapi_refactor::models::Channel {
-    todo!()
+use reqwest::Method;
+
+use super::super::super::super::client::{ApiRequestError, ApiRequestExt};
+use super::super::super::super::models::channel::Channel;
+use super::super::super::super::models::err_resp::ErrResp;
+use super::models::update_channel_request::UpdateChannelRequest;
+use super::ChannelApi;
+
+impl ChannelApi {
+    pub async fn patch_channel(
+        &self,
+        channel_id: &str,
+        body: &UpdateChannelRequest,
+    ) -> Result<Channel, ApiRequestError<ErrResp>> {
+        let path = format!("channels/{channel_id}");
+        self.request
+            .request(&path, Method::PATCH, None, Some(body))
+            .await
+    }
 }

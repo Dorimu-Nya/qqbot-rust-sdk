@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::Panel;
+use super::panel::Panel;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatePanelRequest {

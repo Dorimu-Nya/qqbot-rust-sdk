@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::ApiPermissionDemandIdentify;
+use super::api_permission_demand_identify::ApiPermissionDemandIdentify;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateApiPermissionDemandRequest {
