@@ -1,5 +1,8 @@
+use std::error::Error;
+
 use async_trait::async_trait;
-use reqwest::Method;
+use http::Method;
+use reqwest::header::CONTENT_TYPE;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
@@ -8,16 +11,10 @@ use super::api_request::ApiRequest;
 const API_BASE_URL: &str = "https://api.sgroup.qq.com/";
 
 #[derive(Debug)]
-pub enum ApiClientError {
-    Url(String),
-    Middleware(reqwest_middleware::Error),
-}
-
-#[derive(Debug)]
 pub enum ApiRequestError<E> {
-    Client(ApiClientError),
+    Transport(Box<dyn Error + Send + Sync>),
     Serialize(serde_json::Error),
-    Http(reqwest::Error),
+    Deserialize(serde_json::Error),
     Response {
         status: reqwest::StatusCode,
         body: E,
@@ -60,21 +57,32 @@ impl ApiRequest for ApiClient {
         path: &str,
         method: Method,
         query: Option<&[(&str, String)]>,
-        body: Option<serde_json::Value>,
-    ) -> Result<reqwest::Response, ApiClientError> {
+        body: Option<Vec<u8>>,
+    ) -> Result<(http::StatusCode, Vec<u8>), Box<dyn Error + Send + Sync>> {
         let url = self
             .base_url
             .join(path)
-            .map_err(|error| ApiClientError::Url(error.to_string()))?;
+            .map_err(|error| -> Box<dyn Error + Send + Sync> { Box::new(error) })?;
         let mut request = self.client.request(method, url);
         if let Some(query) = query {
             request = request.query(query);
         }
         if let Some(body) = body {
-            request = request.json(&body);
+            request = request.header(CONTENT_TYPE, "application/json").body(body);
         }
 
-        request.send().await.map_err(ApiClientError::Middleware)
+        let response = request
+            .send()
+            .await
+            .map_err(|error| -> Box<dyn Error + Send + Sync> { Box::new(error) })?;
+        let status = response.status();
+        let body = response
+            .bytes()
+            .await
+            .map_err(|error| -> Box<dyn Error + Send + Sync> { Box::new(error) })?
+            .to_vec();
+
+        Ok((status, body))
     }
 }
 
@@ -95,32 +103,23 @@ where
         ErrorBody: DeserializeOwned,
     {
         let body = body
-            .map(serde_json::to_value)
+            .map(serde_json::to_vec)
             .transpose()
             .map_err(ApiRequestError::Serialize)?;
-        let response = self
+        let (status, response_body) = self
             .send(path, method, query, body)
             .await
-            .map_err(ApiRequestError::Client)?;
-        let status = response.status();
+            .map_err(ApiRequestError::Transport)?;
         if status.is_success() {
-            if matches!(
-                status,
-                reqwest::StatusCode::NO_CONTENT | reqwest::StatusCode::RESET_CONTENT
-            ) {
-                return serde_json::from_value(serde_json::Value::Null)
-                    .map_err(ApiRequestError::Serialize);
-            }
-
-            response
-                .json::<ResponseBody>()
-                .await
-                .map_err(ApiRequestError::Http)
+            let body = if response_body.is_empty() {
+                b"null".as_slice()
+            } else {
+                response_body.as_slice()
+            };
+            serde_json::from_slice(body).map_err(ApiRequestError::Deserialize)
         } else {
-            let body = response
-                .json::<ErrorBody>()
-                .await
-                .map_err(ApiRequestError::Http)?;
+            let body = serde_json::from_slice::<ErrorBody>(&response_body)
+                .map_err(ApiRequestError::Deserialize)?;
             Err(ApiRequestError::Response { status, body })
         }
     }

@@ -1,4 +1,4 @@
-use reqwest::Method;
+use http::Method;
 
 use super::super::super::super::client::{ApiRequestError, ApiRequestExt};
 use super::super::super::super::models::channel::Channel;

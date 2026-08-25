@@ -1,5 +1,5 @@
+use http::Method;
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
-use reqwest::Method;
 
 use super::super::super::super::client::{ApiRequestError, ApiRequestExt};
 use super::super::super::super::models::err_resp::ErrResp;

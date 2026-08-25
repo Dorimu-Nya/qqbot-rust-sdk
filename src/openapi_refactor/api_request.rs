@@ -1,7 +1,7 @@
-use async_trait::async_trait;
-use reqwest::Method;
+use std::error::Error;
 
-use super::client::ApiClientError;
+use async_trait::async_trait;
+use http::{Method, StatusCode};
 
 #[async_trait]
 pub trait ApiRequest: Send + Sync {
@@ -10,6 +10,6 @@ pub trait ApiRequest: Send + Sync {
         path: &str,
         method: Method,
         query: Option<&[(&str, String)]>,
-        body: Option<serde_json::Value>,
-    ) -> Result<reqwest::Response, ApiClientError>;
+        body: Option<Vec<u8>>,
+    ) -> Result<(StatusCode, Vec<u8>), Box<dyn Error + Send + Sync>>;
 }

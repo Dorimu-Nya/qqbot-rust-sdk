@@ -1,4 +1,4 @@
-use reqwest::Method;
+use http::Method;
 
 use super::super::super::client::{ApiRequestError, ApiRequestExt};
 use super::super::super::models::{err_resp::ErrResp, user::User};
