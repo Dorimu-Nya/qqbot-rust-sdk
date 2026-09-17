@@ -5,7 +5,7 @@ use http::Extensions;
 use reqwest::header::{HeaderValue, AUTHORIZATION};
 use reqwest::Request;
 use reqwest_middleware::{Middleware, Next, Result};
-use serde::Deserialize;
+use serde::{de, Deserialize, Deserializer};
 use tokio::sync::Mutex;
 
 const TOKEN_URL: &str = "https://bots.qq.com/app/getAppAccessToken";
@@ -21,9 +21,29 @@ pub struct TokenMiddleware {
 #[derive(Deserialize)]
 struct Token {
     access_token: String,
+    #[serde(deserialize_with = "deserialize_u64_from_number_or_string")]
     expires_in: u64,
     #[serde(skip, default = "Instant::now")]
     expires_at: Instant,
+}
+
+fn deserialize_u64_from_number_or_string<'de, D>(
+    deserializer: D,
+) -> std::result::Result<u64, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumberOrString {
+        Number(u64),
+        String(String),
+    }
+
+    match NumberOrString::deserialize(deserializer)? {
+        NumberOrString::Number(value) => Ok(value),
+        NumberOrString::String(value) => value.parse().map_err(de::Error::custom),
+    }
 }
 
 /// 创建使用应用凭据自动获取 token 的中间件。
@@ -85,5 +105,26 @@ impl Middleware for TokenMiddleware {
             .map_err(reqwest_middleware::Error::middleware)?;
         request.headers_mut().insert(AUTHORIZATION, authorization);
         next.run(request, extensions).await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Token;
+
+    #[test]
+    fn token_accepts_numeric_expiration() {
+        let token: Token =
+            serde_json::from_str(r#"{"access_token":"token","expires_in":3912}"#).unwrap();
+
+        assert_eq!(token.expires_in, 3912);
+    }
+
+    #[test]
+    fn token_accepts_string_expiration() {
+        let token: Token =
+            serde_json::from_str(r#"{"access_token":"token","expires_in":"3912"}"#).unwrap();
+
+        assert_eq!(token.expires_in, 3912);
     }
 }
